@@ -1,0 +1,120 @@
+{{% BLOCKS }}
+{{< layout }}
+
+{{$ title }}{{ COMPANY }} - Mass User Creation{{/ title }}
+
+{{$ stylesheets }}
+{{/ stylesheets }}
+
+{{$ breadcrumb }}
+<li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
+<li class="breadcrumb-item active" aria-current="page">Users</li>
+<li class="breadcrumb-item active" aria-current="page">Mass User Creation</li>
+{{/ breadcrumb }}
+
+{{$ pageheader }}Mass User Creation{{/ pageheader }}
+
+{{$ alerts }}
+{{# message }}
+{{{ message }}}
+{{/ message }}
+{{/ alerts }}
+
+{{$ content }}
+<label class="section-title">User creation</label>
+<p class="mg-b-20 mg-sm-b-40">Create a large number of users</p>
+
+<div id="app">
+    <form method="post" name="form" id="form" role="form" ref="form" @submit.prevent="onSubmit" novalidate>
+        <div class="form-group">
+            <label class="control-label" for="prefix">Prefix (optional)</label>
+            <input class="form-control" type="text" name="prefix" id="prefix" placeholder="Enter a prefix" value="usr"
+                v-model="prefix">
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="separator">Separator (optional)</label>
+            <input class="form-control" type="text" name="separator" id="separator" placeholder="Enter a separator"
+                maxlength="1" value="-" v-model="separator">
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="start">Where does it start?</label>
+            <input class="form-control" type="number" name="start" id="start" placeholder="Enter a number" min="1"
+                value="1" v-model="start" required>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="count">How many?</label>
+            <input class="form-control" type="number" name="count" id="count" placeholder="Enter a number" min="1"
+                value="1" v-model="count" required>
+        </div>
+
+        <div class="form-group">
+            <p>
+                Create users from <b>`${prefix}${separator}${start}`</b> to <b>`${prefix}${separator}${sum}`</b>
+            </p>
+        </div>
+
+        <div id="spinner" class="form-group text-center" style="display: none;">
+            <i class="fa fa-spinner fa-3x fa-pulse"></i>
+            <p>Wait, in progress...</p>
+        </div>
+
+        <div class="form-group">
+            <button id="btn" type="submit" class="btn btn-primary" form="form">SUBMIT</button>
+        </div>
+    </form>
+</div>
+{{/ content }}
+
+{{$ scripts }}
+{{! development version, includes helpful console warnings }}
+<script src="{{ BASE_URL }}assets/js/pristine.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        delimiters: ['${', '}'],
+        data: function () {
+            return {
+                prefix: 'usr',
+				separator: '-',
+				start: 1,
+				count: 1
+            }
+        },
+        methods: {
+            onSubmit: function () {
+				// create the pristine instance
+				var pristine = new Pristine(document.querySelector("#form"))
+
+				if (pristine.validate()) {
+					swal({
+						text: "Are you sure you want to do this?",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true
+					})
+					.then((value) => {
+						if (value) {
+							document.querySelector('#btn').disabled = true
+							document.querySelector('#spinner').style.display = 'block'
+							document.querySelector('#form').submit()
+						}
+					})
+				}
+            }
+        },
+        computed: {
+            sum: function () {
+                return parseInt(this.start) + parseInt(this.count)
+            }
+        }
+    })
+</script>
+{{/ scripts }}
+{{/ layout }}

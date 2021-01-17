@@ -1,0 +1,50 @@
+{{% BLOCKS }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	{{> /partials/head }}
+
+</head>
+
+<body>
+
+	{{> /partials/navbar }}
+
+	<div class="slim-body">
+
+		{{> /partials/sidebar }}
+
+		<div class="slim-mainpanel">
+			<div class="container">
+				<div class="slim-pageheader">
+					<ol class="breadcrumb slim-breadcrumb">
+						{{$ breadcrumb }}
+						<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+						{{/ breadcrumb }}
+					</ol>
+					<h6 class="slim-pagetitle">{{$ pageheader }}Dashboard{{/ pageheader }}</h6>
+				</div><!-- slim-pageheader -->
+
+				{{$ alerts }}
+				{{/ alerts }}
+
+				<div class="section-wrapper">
+					{{$ content }}
+					{{/ content }}
+				</div><!-- section-wrapper -->
+
+			</div><!-- container -->
+
+			{{> /partials/footer }}
+
+		</div><!-- slim-mainpanel -->
+	</div><!-- slim-body -->
+
+	{{> /partials/scripts }}
+
+</body>
+
+</html>

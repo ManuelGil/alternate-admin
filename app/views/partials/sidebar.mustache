@@ -1,0 +1,28 @@
+{{% BLOCKS }}
+
+<div class="slim-sidebar">
+	<label class="sidebar-label">Navigation</label>
+
+	<ul class="nav nav-sidebar">
+		<li class="sidebar-nav-item with-sub">
+			<a href="" class="sidebar-nav-link"><i class="icon ion-ios-people-outline"></i> Users</a>
+			<ul class="nav sidebar-nav-sub">
+				<li class="nav-sub-item"><a href="{{ BASE_URL }}users/list-users" class="nav-sub-link">List Users</a></li>
+				<li class="nav-sub-item"><a href="{{ BASE_URL }}users/mass-user-create" class="nav-sub-link">Mass User Creation</a></li>
+			</ul>
+		</li>
+		<li class="sidebar-nav-item with-sub">
+			<a href="" class="sidebar-nav-link"><i class="icon ion-ios-monitor-outline"></i> Courses</a>
+			<ul class="nav sidebar-nav-sub">
+				<li class="nav-sub-item"><a href="{{ BASE_URL }}courses/list-courses" class="nav-sub-link">List Courses</a></li>
+				<li class="nav-sub-item"><a href="{{ BASE_URL }}courses/count-students" class="nav-sub-link">Count Students</a></li>
+			</ul>
+		</li>
+		<li class="sidebar-nav-item with-sub">
+			<a href="" class="sidebar-nav-link"><i class="icon ion-ios-locked-outline"></i> Admins</a>
+			<ul class="nav sidebar-nav-sub">
+				<li class="nav-sub-item"><a href="{{ BASE_URL }}admins/list-admins" class="nav-sub-link">List Users</a></li>
+			</ul>
+		</li>
+	</ul>
+</div><!-- slim-sidebar -->

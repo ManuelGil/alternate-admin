@@ -1,0 +1,45 @@
+{{% BLOCKS }}
+{{% FILTERS }}
+
+<div class="slim-header with-sidebar">
+	<div class="container-fluid">
+		<div class="slim-header-left">
+			<h2 class="slim-logo"><a href="{{ BASE_URL }}">ADMIN<span>.</span></a></h2>
+			<a href="" id="slimSidebarMenu" class="slim-sidebar-menu"><span></span></a>
+		</div><!-- slim-header-left -->
+		<div class="slim-header-right">
+			<div class="dropdown dropdown-c">
+				<a href="#" class="logged-user" data-toggle="dropdown">
+					<img src="https://www.gravatar.com/avatar/{{ USER.email | md5 }}?s=500" alt="">
+					<span>{{ USER.firstname }} {{ USER.lastname }} </span>
+					<i class="fa fa-angle-down"></i>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<nav class="nav">
+						<a href="{{ wwwroot }}/my/" class="nav-link">
+							<i class="icon ion-ios-speedometer"></i> Dashboard
+						</a>
+						<a href="{{ wwwroot }}/?redirect=0" class="nav-link">
+							<i class="icon ion-ios-home"></i> Site home
+						</a>
+						<a href="{{ wwwroot }}/user/profile.php?id={{ USER.id }}" class="nav-link">
+							<i class="icon ion-ios-person"></i> Profile
+						</a>
+						<a href="{{ wwwroot }}/grade/report/overview/index.php" class="nav-link">
+							<i class="icon ion-ios-grid-view"></i> Grades
+						</a>
+						<a href="{{ wwwroot }}/message/index.php" class="nav-link">
+							<i class="icon ion-ios-chatbubble"></i> Messages
+						</a>
+						<a href="{{ wwwroot }}/user/preferences.php" class="nav-link">
+							<i class="icon ion-wrench"></i> Preferences
+						</a>
+						<a href="{{ wwwroot }}/login/logout.php?sesskey={{ USER.sesskey }}" class="nav-link">
+							<i class="icon ion-log-out"></i> Log Out
+						</a>
+					</nav>
+				</div><!-- dropdown-menu -->
+			</div><!-- dropdown -->
+		</div><!-- header-right -->
+	</div><!-- container-fluid -->
+</div><!-- slim-header -->
