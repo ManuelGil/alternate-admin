@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.1 $ $Date: 01/15/2020 $
+ * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -51,14 +51,14 @@ class UserController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the users.
-		$items = addslashes(json_encode(get_users(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$users = addslashes(json_encode(get_users(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
 		$params = array(
 			'COMPANY' => COMPANY,
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
-			'items' => $items
+			'users' => $users
 		);
 
 		// Render template.
@@ -66,10 +66,10 @@ class UserController extends BaseController
 	}
 
 	/**
-	 * This method load the 'mass-user-create' route. <br/>
+	 * This method load the 'bulk-user-creation' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getMassUserCreate()
+	public function getBulkUserCreation()
 	{
 		// Imports Config and Current User.
 		global $CFG, $USER;
@@ -82,26 +82,29 @@ class UserController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/users/mass-user-create.mustache', $params);
+		return $this->render('/users/bulk-user-creation.mustache', $params);
 	}
 
 	/**
-	 * This method load the 'mass-user-create' route. <br/>
+	 * This method load the 'bulk-user-creation' route. <br/>
 	 * <b>post: </b>access to POST method.
 	 */
-	public function postMassUserCreate()
+	public function postBulkUserCreation()
 	{
 		// Imports Config and Current User.
 		global $CFG, $USER;
 
+		// Parsing the post params.
 		$prefix = (string) $_POST['prefix'];
 		$separator = (string) $_POST['separator'];
 		$start = (int) $_POST['start'];
 		$count = (int) $_POST['count'];
 
+		// Define the count variables.
 		$successes = 0;
-		$fails = 0;
+		$failures = 0;
 
+		// The users has been show in a table component.
 		$result = "<div class=\"table-responsive\">
                         <table id=\"table\" class=\"table table-striped table-hover table-condensed\">
                             <thead>
@@ -113,33 +116,43 @@ class UserController extends BaseController
                             </thead>
 							<tbody>";
 
+		// Loop through the users.
 		for ($i = 0; $i < $count; $i++) {
+			// If username exist launch an error.
 			try {
 				$index = $start + $i;
 
+				// Set an username.
 				$username = "{$prefix}{$separator}{$index}";
 
+				// Set a password.
 				$data = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
 				$password = substr(str_shuffle($data), 0, 7);
 
+				// Create a new user.
 				$user = create_user_record($username, $password);
 
+				// Add the new user into the table.
 				$result .= "<tr>
 							<td>{$user->id}</td>
 							<td>{$username}</td>
 							<td>{$password}</td>
 						</tr>";
 
+				// Add one user to the count.
 				$successes++;
 			} catch (\Throwable $e) {
-				$fails++;
+				// Add one fault to the count.
+				$failures++;
 			}
 		}
 
+		// Close the table of users.
 		$result .= "</tbody></table></div>";
 
 		$message = "";
 
+		// Add a message with the number of hits.
 		if ($successes > 0) {
 			$message .= "<div class=\"alert alert-success\" role=\"alert\">
         				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
@@ -149,15 +162,17 @@ class UserController extends BaseController
         				</div>";
 		}
 
-		if ($fails > 0) {
+		// Add a message with the number of failures.
+		if ($failures > 0) {
 			$message .= "<div class=\"alert alert-danger\" role=\"alert\">
         				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
         				        <span aria-hidden=\"true\">&times;</span>
         				      </button>
-        				      <strong>Heads up!</strong> {$fails} users could not be created.
+        				      <strong>Heads up!</strong> {$failures} users could not be created.
         				</div>";
 		}
 
+		// Add the result.
 		$message .= "<div class=\"alert alert-info\" role=\"alert\">
         			      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
         			        <span aria-hidden=\"true\">&times;</span>
@@ -175,6 +190,6 @@ class UserController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/users/mass-user-create.mustache', $params);
+		return $this->render('/users/bulk-user-creation.mustache', $params);
 	}
 }

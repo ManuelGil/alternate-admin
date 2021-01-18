@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.1 $ $Date: 01/15/2020 $
+ * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -51,7 +51,50 @@ class CourseController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the courses.
-		$items = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses
+		);
+
+		// Render template.
+		return $this->render('/courses/list-courses.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'count-editingteachers' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCountEditingteachers()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count editingteachers.
+		$sql = "SELECT		{course}.id,
+							{course}.fullname AS course,
+							COUNT({course}.id) AS editingteachers
+				FROM		{role_assignments}
+				JOIN		{context}
+					ON		{role_assignments}.contextid = {context}.id
+					AND		{context}.contextlevel = 50
+				JOIN		{user}
+					ON		{user}.id = {role_assignments}.userid
+				JOIN		{course}
+					ON		{context}.instanceid = {course}.id
+				WHERE		{role_assignments}.roleid = 3
+				GROUP BY	{course}.id
+				ORDER BY	editingteachers ASC;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -62,14 +105,62 @@ class CourseController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/courses/list-courses.mustache', $params);
+		return $this->render('/courses/count-editingteachers.mustache', $params);
 	}
 
+	/**
+	 * This method load the 'count-teachers' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCountTeachers()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count teachers.
+		$sql = "SELECT		{course}.id,
+							{course}.fullname AS course,
+							COUNT({course}.id) AS teachers
+				FROM		{role_assignments}
+				JOIN		{context}
+					ON		{role_assignments}.contextid = {context}.id
+					AND		{context}.contextlevel = 50
+				JOIN		{user}
+					ON		{user}.id = {role_assignments}.userid
+				JOIN		{course}
+					ON		{context}.instanceid = {course}.id
+				WHERE		{role_assignments}.roleid = 4
+				GROUP BY	{course}.id
+				ORDER BY	teachers ASC;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/courses/count-teachers.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'count-students' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
 	public function getCountStudents()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
 
+		// SQL Query for count students.
 		$sql = "SELECT		{course}.id,
 							{course}.fullname AS course,
 							COUNT({course}.id) AS students
@@ -84,6 +175,8 @@ class CourseController extends BaseController
 				WHERE		{role_assignments}.roleid = 5
 				GROUP BY	{course}.id
 				ORDER BY	students ASC;";
+
+		// Execute the query.
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.

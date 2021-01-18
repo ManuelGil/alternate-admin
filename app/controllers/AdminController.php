@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.1 $ $Date: 01/15/2020 $
+ * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -51,14 +51,14 @@ class AdminController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the admin users.
-		$items = addslashes(json_encode(get_admins(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$admins = addslashes(json_encode(get_admins(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
 		$params = array(
 			'COMPANY' => COMPANY,
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
-			'items' => $items
+			'admins' => $admins
 		);
 
 		// Render template.

@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.1 $ $Date: 01/15/2020 $
+ * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -89,8 +89,9 @@ class App
 		$router->group(['before' => 'auth'], function ($router) {
 			$router->controller('/', Controllers\MainController::class);
 			$router->controller('/admins', Controllers\AdminController::class);
-			$router->controller('/users', Controllers\UserController::class);
 			$router->controller('/courses', Controllers\CourseController::class);
+			$router->controller('/enrollments', Controllers\EnrollmentController::class);
+			$router->controller('/users', Controllers\UserController::class);
 		});
 
 		// Create a log channel.

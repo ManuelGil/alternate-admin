@@ -1,13 +1,22 @@
 {
 	"name": "manuelgil/alternate-admin",
 	"description": "This wrapper for Moodle adds a new interface to streamline your administrative tasks.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "project",
 	"keywords": [
+		"php",
+		"php7",
 		"admin",
+		"dashboard",
 		"administrator",
+		"administrators",
+		"administration",
+		"admin-dashboard",
+		"admin-panel",
 		"wrapper",
+		"wrapper-api",
 		"moodle",
+		"moodle-lms",
 		"Core API"
 	],
 	"license": "GPL-3.0-or-later",

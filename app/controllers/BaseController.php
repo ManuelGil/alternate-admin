@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.1 $ $Date: 01/15/2020 $
+ * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -58,10 +58,8 @@ class BaseController
 			)
 		);
 
-        // Create a new filter for md5 decoding.
-		$this->templateEngine->addHelper('md5', function ($text) {
-			return md5(strtolower(trim($text)));
-		});
+        // Create a new filter for md5 encoding.
+		$this->templateEngine->addHelper('md5', fn (string $text) => md5(strtolower(trim($text))));
 	}
 
 	/**
@@ -71,7 +69,7 @@ class BaseController
 	 * @param array $params - the data with context of the template.
 	 * @return string the template rendered.
 	 */
-	public function render($fileName, $data = [])
+	protected function render($fileName, $data = [])
 	{
         // Render the template.
 		return $this->templateEngine->render($fileName, $data);

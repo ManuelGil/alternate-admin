@@ -59,41 +59,41 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr v-for="item in items">
-				<td>${ item.id }</td>
-				<td>${ item.category }</td>
-				<td>${ item.sortorder }</td>
-				<td>${ item.fullname }</td>
-				<td>${ item.shortname }</td>
-				<td>${ item.idnumber }</td>
-				<td>${ item.summary }</td>
-				<td>${ item.summaryformat }</td>
-				<td>${ item.format }</td>
-				<td>${ item.showgrades }</td>
-				<td>${ item.newsitems }</td>
-				<td>${ item.startdate }</td>
-				<td>${ item.enddate }</td>
-				<td>${ item.relativedatesmode }</td>
-				<td>${ item.marker }</td>
-				<td>${ item.maxbytes }</td>
-				<td>${ item.legacyfiles }</td>
-				<td>${ item.showreports }</td>
-				<td>${ item.visible }</td>
-				<td>${ item.visibleold }</td>
-				<td>${ item.downloadcontent }</td>
-				<td>${ item.groupmode }</td>
-				<td>${ item.groupmodeforce }</td>
-				<td>${ item.defaultgroupingid }</td>
-				<td>${ item.lang }</td>
-				<td>${ item.calendartype }</td>
-				<td>${ item.theme }</td>
-				<td>${ item.timecreated }</td>
-				<td>${ item.timemodified }</td>
-				<td>${ item.requested }</td>
-				<td>${ item.enablecompletion }</td>
-				<td>${ item.completionnotify }</td>
-				<td>${ item.cacherev }</td>
-				<td>${ item.originalcourseid }</td>
+			<tr v-for="course in courses">
+				<td>${ course.id }</td>
+				<td>${ course.category }</td>
+				<td>${ course.sortorder }</td>
+				<td>${ course.fullname }</td>
+				<td>${ course.shortname }</td>
+				<td>${ course.idnumber }</td>
+				<td>${ course.summary }</td>
+				<td>${ course.summaryformat }</td>
+				<td>${ course.format }</td>
+				<td>${ course.showgrades }</td>
+				<td>${ course.newsitems }</td>
+				<td>${ course.startdate }</td>
+				<td>${ course.enddate }</td>
+				<td>${ course.relativedatesmode }</td>
+				<td>${ course.marker }</td>
+				<td>${ course.maxbytes }</td>
+				<td>${ course.legacyfiles }</td>
+				<td>${ course.showreports }</td>
+				<td>${ course.visible }</td>
+				<td>${ course.visibleold }</td>
+				<td>${ course.downloadcontent }</td>
+				<td>${ course.groupmode }</td>
+				<td>${ course.groupmodeforce }</td>
+				<td>${ course.defaultgroupingid }</td>
+				<td>${ course.lang }</td>
+				<td>${ course.calendartype }</td>
+				<td>${ course.theme }</td>
+				<td>${ course.timecreated }</td>
+				<td>${ course.timemodified }</td>
+				<td>${ course.requested }</td>
+				<td>${ course.enablecompletion }</td>
+				<td>${ course.completionnotify }</td>
+				<td>${ course.cacherev }</td>
+				<td>${ course.originalcourseid }</td>
 			</tr>
 		</tbody>
     </table>
@@ -115,7 +115,7 @@
         delimiters: ['${', '}'],
         data: function () {
             return {
-                items: []
+                courses: []
             }
         },
         created: function () {
@@ -126,7 +126,7 @@
         },
         methods: {
             load: function () {
-                this.items = JSON.parse("{{{ items }}}")
+                this.courses = JSON.parse("{{{ courses }}}")
             }
         }
     })

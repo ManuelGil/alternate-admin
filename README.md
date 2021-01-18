@@ -3,7 +3,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
 
-![preview](https://github.com/ManuelGil/alternate-admin/blob/master/docs/images/preview.png?raw=true)
+![preview](https://raw.githubusercontent.com/ManuelGil/alternate-admin/main/docs/images/preview.png)
 
 This wrapper for Moodle adds a new interface to streamline your administrative tasks.
 
