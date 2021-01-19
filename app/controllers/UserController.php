@@ -27,11 +27,14 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
+ * @version $Revision: 0.0.3 $ $Date: 01/18/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
 namespace App\Controllers;
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * UserController class
@@ -191,5 +194,43 @@ class UserController extends BaseController
 
 		// Render template.
 		return $this->render('/users/bulk-user-creation.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'list-courses' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 */
+	public function getListCourses()
+	{
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
+
+			// Execute and parse the query.
+			return json_encode(enrol_get_users_courses($_GET['user']));
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
 	}
 }

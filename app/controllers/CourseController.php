@@ -27,11 +27,14 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.2 $ $Date: 01/17/2021 $
+ * @version $Revision: 0.0.3 $ $Date: 01/18/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
 namespace App\Controllers;
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * CourseController class
@@ -192,5 +195,64 @@ class CourseController extends BaseController
 
 		// Render template.
 		return $this->render('/courses/count-students.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'list-users' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 */
+	public function getListUsers()
+	{
+		// Imports Database.
+		global $DB;
+
+		// Gets roles.
+		$sql = "SELECT      {user}.id,
+							{user}.username,
+							{user}.email,
+							{user}.firstname,
+							{user}.lastname,
+							{role}.shortname AS role
+                FROM        {course}
+                JOIN  		{enrol}
+                        ON  {enrol}.courseid = {course}.id
+                JOIN  		{user_enrolments}
+                        ON  {user_enrolments}.enrolid = {enrol}.id
+                JOIN  		{user}
+                        ON  {user_enrolments}.userid = {user}.id
+				JOIN 		{role}
+						ON 	{enrol}.roleid = {role}.id
+                WHERE       {course}.id = :course";
+
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
+
+			// Execute and parse the query.
+			return json_encode($DB->get_records_sql($sql, ['course' => $_GET['course']]));
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 {{% BLOCKS }}
 {{< layout }}
 
-{{$ title }}{{ COMPANY }} - Bulk User Enrollment{{/ title }}
+{{$ title }}{{ COMPANY }} - Bulk User Unenrollment{{/ title }}
 
 {{$ stylesheets }}
 {{/ stylesheets }}
@@ -9,10 +9,10 @@
 {{$ breadcrumb }}
 <li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
 <li class="breadcrumb-item active" aria-current="page">Enrollments</li>
-<li class="breadcrumb-item active" aria-current="page">Bulk User Enrollment</li>
+<li class="breadcrumb-item active" aria-current="page">Bulk User Unenrollment</li>
 {{/ breadcrumb }}
 
-{{$ pageheader }}Bulk User Enrollment{{/ pageheader }}
+{{$ pageheader }}Bulk User Unenrollment{{/ pageheader }}
 
 {{$ alerts }}
 {{# message }}
@@ -21,14 +21,15 @@
 {{/ alerts }}
 
 {{$ content }}
-<label class="section-title">Bulk User Enrollment</label>
-<p class="mg-b-20 mg-sm-b-40">Enroll a large number of users</p>
+<label class="section-title">Bulk User Unenrollment</label>
+<p class="mg-b-20 mg-sm-b-40">Unenroll a large number of users</p>
 
 <div id="app">
     <form method="post" name="form" id="form" role="form" ref="form" @submit.prevent="onSubmit" novalidate>
         <div class="form-group">
             <label class="control-label" for="course">Courses</label>
-            <select name="courses[]" id="courses" multiple required>
+            <select name="course" id="course" required>
+				<option data-placeholder="true"></option>
                 <option v-for="course in courses" :value="course.id">
                     ${ course.fullname } - ${ course.shortname }
                 </option>
@@ -38,18 +39,6 @@
         <div class="form-group">
             <label class="control-label" for="user">Users</label>
             <select name="users[]" id="users" multiple required>
-                <option v-for="user in users" :value="user.id">
-                    ${ user.username } - ${ user.firstname } ${ user.lastname } - ${ user.email }
-                </option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label" for="role">Role</label>
-            <select name="role" id="roles" required>
-                <option v-for="role in roles" :value="role.id">
-                    ${ role.shortname }
-                </option>
             </select>
         </div>
 
@@ -75,15 +64,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
     new Vue({
         el: '#app',
         delimiters: ['${', '}'],
         data: function () {
             return {
-				courses: [],
-				users: [],
-				roles: []
+				courses: []
             }
         },
         created: function () {
@@ -91,31 +80,38 @@
         },
         mounted: function () {
             new SlimSelect({
-                select: document.querySelector('#courses'),
+                select: document.querySelector('#course'),
                 placeholder: 'Select a course',
                 hideSelectedOption: true,
-                closeOnSelect: false
+                closeOnSelect: true,
+				onChange: (info) => {
+                    if (info.value) {
+                        axios.get(`{{ BASE_URL }}courses/list-users?course=${info.value}`)
+                            .then(response => {
+                                if (response.status == 200) {
+                                    const users = Object.values(response.data).map(user => {
+										return {
+											value: user.id,
+											text: `${ user.username } - ${ user.firstname } ${ user.lastname } - ${ user.email } - ${ user.role }`
+										}
+									})
+                                    enrolleds.setData(users)
+                                }
+                            })
+					}
+				}
             })
 
-            new SlimSelect({
+            var enrolleds = new SlimSelect({
                 select: document.querySelector('#users'),
                 placeholder: 'Select an user',
                 hideSelectedOption: true,
                 closeOnSelect: false
             })
-
-            new SlimSelect({
-                select: document.querySelector('#roles'),
-                placeholder: 'Select a role',
-                hideSelectedOption: true,
-                closeOnSelect: true
-            })
         },
         methods: {
             load: function () {
                 this.courses = JSON.parse("{{{ courses }}}")
-                this.users = JSON.parse("{{{ users }}}")
-                this.roles = JSON.parse("{{{ roles }}}")
             },
             onSubmit: function () {
 				// create the pristine instance
