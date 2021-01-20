@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.3 $ $Date: 01/18/2021 $
+ * @version $Revision: 0.0.4 $ $Date: 01/19/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -254,5 +254,29 @@ class CourseController extends BaseController
 			}
 			exit;
 		}
+	}
+
+	/**
+	 * This method load the 'list-users-course' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getListUsersCourse()
+	{
+		// Imports Config and Current User.
+		global $CFG, $USER;
+
+		// Parsing the courses.
+		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses
+		);
+
+		// Render template.
+		return $this->render('/courses/list-users-course.mustache', $params);
 	}
 }

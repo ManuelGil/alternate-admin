@@ -27,30 +27,39 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.3 $ $Date: 01/18/2021 $
+ * @version $Revision: 0.0.4 $ $Date: 01/19/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-// Start dotEnv instance.
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
+try {
+	// Start dotEnv instance.
+	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+	$dotenv->load();
 
-// Sets debug mode.
-define('DEBUG', $_ENV['MODE_DEBUG'] === 'true');
+	// Sets debug mode.
+	define('DEBUG', $_ENV['MODE_DEBUG'] === 'true');
 
-// Sets the Domain consntant.
-define('DOMAIN', $_ENV['DOMAIN']);
+	// Sets the Domain consntant.
+	define('DOMAIN', $_ENV['DOMAIN']);
 
-// Sets the Company constant.
-define('COMPANY', $_ENV['COMPANY']);
+	// Sets the Company constant.
+	define('COMPANY', $_ENV['COMPANY']);
 
-// Gets Moodle Config.
-require_once($_ENV['MDL_CONFIG']);
+	// Gets Moodle Config.
+	require_once($_ENV['MDL_CONFIG']);
 
-global $CFG;
+	global $CFG;
 
-// Sets database config.
-define('DB_HOST', $CFG->dbhost);
-define('DB_USER', $CFG->dbuser);
-define('DB_PASS', $CFG->dbpass);
-define('DB_NAME', $CFG->dbname);
+	// Sets database config.
+	define('DB_HOST', $CFG->dbhost);
+	define('DB_USER', $CFG->dbuser);
+	define('DB_PASS', $CFG->dbpass);
+	define('DB_NAME', $CFG->dbname);
+} catch (\Throwable $e) {
+	header_remove();
+	http_response_code(500);
+	header('HTTP/1.1 500 Not Found');
+	echo '<pre>' . $e->getTraceAsString() . '</pre>';
+	echo PHP_EOL;
+	echo $e->getMessage();
+}

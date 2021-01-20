@@ -37,7 +37,7 @@ This wrapper for Moodle adds a new interface to streamline your administrative t
 
 ### Install the project
 
-_Development_
+-   _Development_
 
 ```bash
 $ sudo php composer.phar install
@@ -49,7 +49,7 @@ or
 $ composer install
 ```
 
-_Production_
+-   _Production_
 
 ```bash
 $ sudo php composer.phar install --no-dev --optimize-autoloader
@@ -63,14 +63,18 @@ $ composer install --no-dev --optimize-autoloader
 
 ## Configure the project
 
-Copy the [`.env.example`](https://github.com/ManuelGil/alternate-admin/blob/master/.env.example)
-file and call it `.env`.
+-   Copy the [`.env.example`](https://github.com/ManuelGil/alternate-admin/blob/master/.env.example)
+    file and call it `.env`.
 
-Add the domain address
+-   Create file `error.log` in folder `logs`.
 
-Copy the path of file configuration for moodle in the new file.
+-   Make www-data the owner to `logs` folder.
 
-Create the `error.log` file in the folder `logs`
+```bash
+$ sudo chown www-data: logs/
+```
+
+-   Reset apache2 service.
 
 ## Contributing
 

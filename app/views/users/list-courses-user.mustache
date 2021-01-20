@@ -1,56 +1,54 @@
 {{% BLOCKS }}
 {{< layout }}
 
-{{$ title }}{{ COMPANY }} - List Users By Course{{/ title }}
+{{$ title }}{{ COMPANY }} - List Courses By User{{/ title }}
 
 {{$ stylesheets }}
 {{/ stylesheets }}
 
 {{$ breadcrumb }}
 <li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
-<li class="breadcrumb-item active" aria-current="page">Courses</li>
-<li class="breadcrumb-item active" aria-current="page">List Users By Course</li>
+<li class="breadcrumb-item active" aria-current="page">Users</li>
+<li class="breadcrumb-item active" aria-current="page">List Courses By User</li>
 {{/ breadcrumb }}
 
-{{$ pageheader }}List Users By Course{{/ pageheader }}
+{{$ pageheader }}List Courses By User{{/ pageheader }}
 
 {{$ content }}
 <label class="section-title">List Users</label>
-<p class="mg-b-20 mg-sm-b-40">Student in each course</p>
+<p class="mg-b-20 mg-sm-b-40">Courses for each User</p>
 
 <div id="app">
     <form method="post" name="form" id="form" role="form" ref="form" @submit.prevent="onSubmit" novalidate>
         <div class="form-group">
-            <label class="control-label" for="course">Courses</label>
-            <select name="course" id="course" required>
+            <label class="control-label" for="user">Users</label>
+            <select name="user" id="user" required>
 				<option data-placeholder="true"></option>
-                <option v-for="course in courses" :value="course.id">
-                    ${ course.fullname } - ${ course.shortname }
+                <option v-for="user in users" :value="user.id">
+                    ${ user.username } - ${ user.firstname } ${ user.lastname } - ${ user.email } - ${ user.role }
                 </option>
             </select>
         </div>
 
 		<div class="form-group table-responsive">
-            <label class="control-label" for="table">Users</label>
+            <label class="control-label" for="table">Courses</label>
 			<table id="table" class="table table-striped table-hover table-condensed">
 				<thead>
 					<tr>
 						<th>id</th>
-						<th>username</th>
-						<th>email</th>
-						<th>firstname</th>
-						<th>lastname</th>
-						<th>role</th>
+						<th>category</th>
+						<th>sortorder</th>
+						<th>shortname</th>
+						<th>fullname</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="user in users">
-						<td>${ user.id }</td>
-						<td>${ user.username }</td>
-						<td>${ user.email }</td>
-						<td>${ user.firstname }</td>
-						<td>${ user.lastname }</td>
-						<td>${ user.role }</td>
+					<tr v-for="course in courses">
+						<td>${ course.id }</td>
+						<td>${ course.category }</td>
+						<td>${ course.sortorder }</td>
+						<td>${ course.shortname }</td>
+						<td>${ course.fullname }</td>
 					</tr>
 				</tbody>
 			</table>
@@ -74,8 +72,8 @@
         delimiters: ['${', '}'],
         data: function () {
             return {
-                courses: [],
-				users: []
+				users: [],
+                courses: []
             }
         },
         created: function () {
@@ -83,16 +81,16 @@
         },
         mounted: function () {
             new SlimSelect({
-                select: document.querySelector('#course'),
-                placeholder: 'Select a course',
+                select: document.querySelector('#user'),
+                placeholder: 'Select an user',
                 hideSelectedOption: true,
                 closeOnSelect: true,
 				onChange: (info) => {
                     if (info.value) {
-                        axios.get(`{{ BASE_URL }}courses/list-users?course=${info.value}`)
+                        axios.get(`{{ BASE_URL }}users/list-courses?user=${info.value}`)
                             .then(response => {
                                 if (response.status == 200) {
-                                    this.users = response.data
+                                    this.courses = response.data
                                 }
                             })
 					}
@@ -101,7 +99,7 @@
         },
         methods: {
             load: function () {
-                this.courses = JSON.parse("{{{ courses }}}")
+                this.users = JSON.parse("{{{ users }}}")
             }
         }
     })
