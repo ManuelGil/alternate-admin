@@ -27,14 +27,11 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.4 $ $Date: 01/19/2021 $
+ * @version $Revision: 0.0.5 $ $Date: 01/21/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
 namespace App\Controllers;
-
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
 /**
  * EnrollmentController class
@@ -43,6 +40,15 @@ use Monolog\Logger;
  */
 class EnrollmentController extends BaseController
 {
+
+	/**
+	 * This method redirect to BASE URL when access to parent section. <br/>
+	 * <b>post: </b>access to any method (POST, GET, DELETE, OPTIONS, HEAD etc...).
+	 */
+	public function anyIndex()
+	{
+		header('location: ' . BASE_URL);
+	}
 
 	/**
 	 * This method load the 'bulk-user-enrollment' route. <br/>

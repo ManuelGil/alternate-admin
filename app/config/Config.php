@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.4 $ $Date: 01/19/2021 $
+ * @version $Revision: 0.0.5 $ $Date: 01/21/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -44,6 +44,9 @@ try {
 
 	// Sets the Company constant.
 	define('COMPANY', $_ENV['COMPANY']);
+
+	// If you want to run phpunit, uncomment this
+	// define('CLI_SCRIPT', true);
 
 	// Gets Moodle Config.
 	require_once($_ENV['MDL_CONFIG']);

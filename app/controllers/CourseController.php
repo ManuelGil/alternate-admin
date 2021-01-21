@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.4 $ $Date: 01/19/2021 $
+ * @version $Revision: 0.0.5 $ $Date: 01/21/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -43,6 +43,15 @@ use Monolog\Logger;
  */
 class CourseController extends BaseController
 {
+
+	/**
+	 * This method redirect to BASE URL when access to parent section. <br/>
+	 * <b>post: </b>access to any method (POST, GET, DELETE, OPTIONS, HEAD etc...).
+	 */
+	public function anyIndex()
+	{
+		header('location: ' . BASE_URL);
+	}
 
 	/**
 	 * This method load the 'list-courses' route. <br/>
@@ -201,8 +210,10 @@ class CourseController extends BaseController
 	 * This method load the 'list-users' route. <br/>
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
+	 *
+	 * @param int $course - the course id
 	 */
-	public function getListUsers()
+	public function getListUsers($course = 0)
 	{
 		// Imports Database.
 		global $DB;
@@ -236,7 +247,7 @@ class CourseController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode($DB->get_records_sql($sql, ['course' => $_GET['course']]));
+			return json_encode($DB->get_records_sql($sql, ['course' => (int) $course]));
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {

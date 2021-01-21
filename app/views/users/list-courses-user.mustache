@@ -87,7 +87,7 @@
                 closeOnSelect: true,
 				onChange: (info) => {
                     if (info.value) {
-                        axios.get(`{{ BASE_URL }}users/list-courses?user=${info.value}`)
+                        axios.get(`{{ BASE_URL }}users/list-courses/${info.value}`)
                             .then(response => {
                                 if (response.status == 200) {
                                     this.courses = response.data
