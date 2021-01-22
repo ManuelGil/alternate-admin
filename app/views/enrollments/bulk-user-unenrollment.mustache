@@ -48,7 +48,7 @@
         </div>
 
         <div class="form-group">
-            <button id="btn" type="submit" class="btn btn-primary" form="form">SUBMIT</button>
+            <button id="btnSubmit" type="submit" class="btn btn-primary" form="form">SUBMIT</button>
         </div>
     </form>
 </div>
@@ -86,7 +86,7 @@
                 closeOnSelect: true,
 				onChange: (info) => {
                     if (info.value) {
-                        axios.get(`{{ BASE_URL }}courses/list-users?course=${info.value}`)
+                        axios.get(`{{ BASE_URL }}courses/list-users/${info.value}`)
                             .then(response => {
                                 if (response.status == 200) {
                                     const users = Object.values(response.data).map(user => {
@@ -126,7 +126,7 @@
 					})
 					.then((value) => {
 						if (value) {
-							document.querySelector('#btn').disabled = true
+							document.querySelector('#btnSubmit').disabled = true
 							document.querySelector('#spinner').style.display = 'block'
 							document.querySelector('#form').submit()
 						}

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2021-01-22
+
+### Added
+
+-   New "Dynamic Unenrollment" sub-section to "Enrollment".
+
+### Changed
+
+-   Fixes #1 - remove arrow funtion to previous versions.
+
 ## [0.0.5] - 2021-01-21
 
 ### Added

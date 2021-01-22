@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.5 $ $Date: 01/21/2021 $
+ * @version $Revision: 0.0.6 $ $Date: 01/22/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -178,7 +178,7 @@ class EnrollmentController extends BaseController
 	}
 
 	/**
-	 * This method load the 'bilk-user-unenrollment' route. <br/>
+	 * This method load the 'bulk-user-unenrollment' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
 	public function getBulkUserUnenrollment()
@@ -202,7 +202,7 @@ class EnrollmentController extends BaseController
 	}
 
 	/**
-	 * This method load the 'bilk-user-unenrollment' route. <br/>
+	 * This method load the 'bulk-user-unenrollment' route. <br/>
 	 * <b>post: </b>access to POST method.
 	 */
 	public function postBulkUserUnenrollment()
@@ -264,5 +264,118 @@ class EnrollmentController extends BaseController
 
 		// Render template.
 		return $this->render('/enrollments/bulk-user-unenrollment.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'dynamic-unenrollment' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getDynamicUnenrollment()
+	{
+		// Imports Config and Current User.
+		global $CFG, $USER;
+
+		// Parsing the courses.
+		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		// Parsing the users.
+		$users = addslashes(json_encode(get_users_listing(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses,
+			'users' => $users
+		);
+
+		// Render template.
+		return $this->render('/enrollments/Dynamic-unenrollment.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'dynamic-unenrollment' route. <br/>
+	 * <b>post: </b>access to POST method.
+	 */
+	public function postDynamicUnenrollment()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// The users has been show in a table component.
+		$result = "<div class=\"table-responsive\">
+                        <table id=\"table\" class=\"table table-striped table-hover table-condensed\">
+                            <thead>
+                                <tr>
+									<th>user id</th>
+                                    <th>plugin</th>
+                                </tr>
+                            </thead>
+							<tbody>";
+
+		if ($_POST['search'] == 'course') {
+			// Get intances of enrol table.
+			$instances = $DB->get_records('enrol', array('courseid' => $_POST['course']));
+
+			foreach ($_POST['users'] as $userid) {
+				foreach ($instances as $instance) {
+					$plugin = enrol_get_plugin($instance->enrol);
+					$plugin->unenrol_user($instance, $userid);
+
+					// Add the new user into the table.
+					$result .= "<tr>
+									<td>{$userid}</td>
+									<td>" . get_class($plugin) . "</td>
+								</tr>";
+				}
+			}
+		}
+
+		if ($_POST['search'] == 'user') {
+			foreach ($_POST['courses'] as $courseid) {
+				// Get intances of enrol table.
+				$instances = $DB->get_records('enrol', array('courseid' => $courseid));
+
+				foreach ($instances as $instance) {
+					$plugin = enrol_get_plugin($instance->enrol);
+					$plugin->unenrol_user($instance, $_POST['user']);
+
+					// Add the new user into the table.
+					$result .= "<tr>
+									<td>{$_POST['user']}</td>
+									<td>" . get_class($plugin) . "</td>
+								</tr>";
+				}
+			}
+		}
+
+		$result .= "</tbody></table></div>";
+
+		$message = "";
+
+		// Add the result.
+		$message .= "<div class=\"alert alert-info\" role=\"alert\">
+        			      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        			        <span aria-hidden=\"true\">&times;</span>
+        			      </button>
+						  <strong>Oh snap!</strong> The following users were unrolleds:<br><br>
+						  {$result}
+        			</div>";
+
+		// Parsing the courses.
+		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses,
+			'message' => $message
+		);
+
+		// Render template.
+		return $this->render('/enrollments/Dynamic-unenrollment.mustache', $params);
 	}
 }
