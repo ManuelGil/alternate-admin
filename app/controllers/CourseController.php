@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.7 $ $Date: 01/23/2021 $
+ * @version $Revision: 0.0.8 $ $Date: 01/24/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -204,6 +204,126 @@ class CourseController extends BaseController
 
 		// Render template.
 		return $this->render('/courses/count-students.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'course-without-editingteachers' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCourseWithoutEditingteachers()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count editingteachers.
+		$sql = "SELECT		{course}.id,
+				    		{course}.fullname
+				FROM 		{course}
+				LEFT JOIN 	{context}
+					ON 		{course}.id = {context}.instanceid
+				    AND		{context}.contextlevel = 50
+				LEFT JOIN	{role_assignments}
+					ON		{context}.id = {role_assignments}.contextid
+				    AND 	{role_assignments}.roleid = 3
+				GROUP BY 	{course}.id
+				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/courses/course-without-editingteachers.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'course-without-teachers' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCourseWithoutTeachers()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count teachers.
+		$sql = "SELECT		{course}.id,
+				    		{course}.fullname
+				FROM 		{course}
+				LEFT JOIN 	{context}
+					ON 		{course}.id = {context}.instanceid
+				    AND		{context}.contextlevel = 50
+				LEFT JOIN	{role_assignments}
+					ON		{context}.id = {role_assignments}.contextid
+				    AND 	{role_assignments}.roleid = 4
+				GROUP BY 	{course}.id
+				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/courses/course-without-teachers.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'course-without-students' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCourseWithoutStudents()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count students.
+		$sql = "SELECT		{course}.id,
+				    		{course}.fullname
+				FROM 		{course}
+				LEFT JOIN 	{context}
+					ON 		{course}.id = {context}.instanceid
+				    AND		{context}.contextlevel = 50
+				LEFT JOIN	{role_assignments}
+					ON		{context}.id = {role_assignments}.contextid
+				    AND 	{role_assignments}.roleid = 5
+				GROUP BY 	{course}.id
+				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/courses/course-without-students.mustache', $params);
 	}
 
 	/**

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.8] - 2021-01-24
+
+-   New "Course Without Editing Teachers" sub-section to "Courses".
+-   New "Course Without Teachers" sub-section to "Courses".
+-   New "Course Without Students" sub-section to "Courses".
+
 ## [0.0.7] - 2021-01-23
 
 ### Added
@@ -79,7 +85,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.7...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.5...v0.0.6
 [#1]: https://github.com/ManuelGil/alternate-admin/issues/1
