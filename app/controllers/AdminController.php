@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.6 $ $Date: 01/22/2021 $
+ * @version $Revision: 0.0.7 $ $Date: 01/23/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -72,5 +72,113 @@ class AdminController extends BaseController
 
 		// Render template.
 		return $this->render('/admins/list-admins.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'users-created' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getUsersCreated()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count users.
+		$sql = "SELECT		YEAR(FROM_UNIXTIME(firstaccess)) AS years,
+    						COUNT(*) AS users
+				FROM		{user}
+				GROUP BY 	years;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/admins/users-created.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'logged-once' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getLoggedOnce()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count users.
+		$sql = "SELECT		id,
+        					username,
+        					email,
+        					firstname,
+        					lastname
+				FROM		{user}
+				WHERE   	deleted = 0
+    				AND 	lastlogin = 0
+    				AND 	lastaccess > 0;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/admins/logged-once.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'logged-last-days' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getLoggedLastDays()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count users.
+		$sql = "SELECT		id,
+        					username,
+        					email,
+        					firstname,
+        					lastname,
+							lastlogin
+				FROM		{user}
+				WHERE   	DATEDIFF(NOW(), FROM_UNIXTIME(lastlogin)) < 120;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/admins/logged-last-days.mustache', $params);
 	}
 }

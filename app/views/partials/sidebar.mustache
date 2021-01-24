@@ -34,6 +34,14 @@
 			<a href="" class="sidebar-nav-link"><i class="icon ion-ios-locked-outline"></i> Admins</a>
 			<ul class="nav sidebar-nav-sub">
 				<li class="nav-sub-item"><a href="{{ BASE_URL }}admins/list-admins" class="nav-sub-link">List Users</a></li>
+              	<li class="nav-sub-item sub-with-sub">
+              	  	<a href="#" class="nav-sub-link">Report of Users</a>
+              	  	<ul>
+              	  	  	<li><a href="{{ BASE_URL }}admins/users-created">Users Created</a></li>
+              	  	  	<li><a href="{{ BASE_URL }}admins/logged-once">Logged Once</a></li>
+              	  	  	<li><a href="{{ BASE_URL }}admins/logged-last-days">Logged Last Days</a></li>
+              	  	</ul>
+              	</li>
 			</ul>
 		</li>
 	</ul>

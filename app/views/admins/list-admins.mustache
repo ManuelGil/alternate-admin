@@ -46,7 +46,7 @@
                 <td>${ admin.email }</td>
                 <td>${ admin.city }</td>
                 <td>${ admin.country }</td>
-                <td>${ admin.lastaccess }</td>
+                <td>${ admin.lastaccess | date }</td>
                 <td>${ admin.confirmed }</td>
                 <td>${ admin.mnethostid }</td>
                 <td>${ admin.suspended }</td>
@@ -90,7 +90,12 @@
             load: function () {
                 this.admins = JSON.parse("{{{ admins }}}")
             }
-        }
+        },
+		filters: {
+			date: function (value) {
+				return new Date(value * 1000).toDateString()
+			}
+		}
     })
 </script>
 {{/ scripts }}

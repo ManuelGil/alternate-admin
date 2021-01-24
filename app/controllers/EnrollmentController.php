@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.6 $ $Date: 01/22/2021 $
+ * @version $Revision: 0.0.7 $ $Date: 01/23/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -65,16 +65,8 @@ class EnrollmentController extends BaseController
 		// Parsing the users.
 		$users = addslashes(json_encode(get_users_listing(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
-		// Gets roles.
-		$sql = "SELECT		*
-				FROM		{role}
-				ORDER BY	sortorder ASC;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
-
 		// Parsing the records.
-		$roles = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$roles = addslashes(json_encode($DB->get_records('role'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -151,16 +143,8 @@ class EnrollmentController extends BaseController
 		// Parsing the courses.
 		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
-		// Gets roles.
-		$sql = "SELECT		*
-				FROM		{role}
-				ORDER BY	sortorder ASC;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
-
 		// Parsing the records.
-		$roles = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$roles = addslashes(json_encode($DB->get_records('role'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
 
 		$params = array(
 			'COMPANY' => COMPANY,

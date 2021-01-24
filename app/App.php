@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.6 $ $Date: 01/22/2021 $
+ * @version $Revision: 0.0.7 $ $Date: 01/23/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -116,6 +116,19 @@ class App
 				header_remove();
 				http_response_code(500);
 				header('HTTP/1.1 500 Internal Server Error');
+				echo "	<head>
+							<link rel=\"stylesheet\" href=\"" . BASE_URL . "assets/css/slim.min.css\">
+							<script src=\"" . BASE_URL . "assets/js/slim.min.js\"></script>
+						</head>
+						<body>
+							<div class=\"page-error-wrapper\">
+								<div>
+									<h1 class=\"error-title\">500</h1>
+									<h5 class=\"tx-sm-24 tx-normal\">Oopps. Internal server error.</h5>
+									<p class=\"mg-b-50\">The server encountered an internal server error and was unable to complete your request.</p>
+								</div>
+							</div>
+						</body>";
 			}
 			exit;
 		} catch (HttpRouteNotFoundException $e) {
@@ -130,6 +143,20 @@ class App
 				header_remove();
 				http_response_code(404);
 				header('HTTP/1.1 404 Not Found');
+				echo "	<head>
+							<link rel=\"stylesheet\" href=\"" . BASE_URL . "assets/css/slim.min.css\">
+							<script src=\"" . BASE_URL . "assets/js/slim.min.js\"></script>
+						</head>
+						<body>
+							<div class=\"page-error-wrapper\">
+								<div>
+									<h1 class=\"error-title\">404</h1>
+									<h5 class=\"tx-sm-24 tx-normal\">Oopps. The page you were looking for doesn't exist.</h5>
+									<p class=\"mg-b-50\">You may have mistyped the address or the page may have moved.</p>
+									<p class=\"mg-b-50\"><a href=\"" . BASE_URL . "\" class=\"btn btn-error\">Back to Home</a></p>
+								</div>
+							</div>
+						</body>";
 			}
 			exit;
 		} catch (\Throwable $e) {
@@ -146,6 +173,19 @@ class App
 				header_remove();
 				http_response_code(500);
 				header('HTTP/1.1 500 Internal Server Error');
+				echo "	<head>
+							<link rel=\"stylesheet\" href=\"" . BASE_URL . "assets/css/slim.min.css\">
+							<script src=\"" . BASE_URL . "assets/js/slim.min.js\"></script>
+						</head>
+						<body>
+							<div class=\"page-error-wrapper\">
+								<div>
+									<h1 class=\"error-title\">500</h1>
+									<h5 class=\"tx-sm-24 tx-normal\">Oopps. Internal server error.</h5>
+									<p class=\"mg-b-50\">The server encountered an internal server error and was unable to complete your request.</p>
+								</div>
+							</div>
+						</body>";
 			}
 			exit;
 		}

@@ -47,6 +47,7 @@
         <div class="form-group">
             <label class="control-label" for="role">Role</label>
             <select name="role" id="roles" required>
+				<option data-placeholder="true"></option>
                 <option v-for="role in roles" :value="role.id">
                     ${ role.shortname }
                 </option>

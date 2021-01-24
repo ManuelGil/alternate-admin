@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.7] - 2021-01-23
+
+### Added
+
+-   New "Users Created" sub-section to "Admin".
+-   New "Logged Once" sub-section to "Admin".
+-   New "Logged Last Days" sub-section to "Admin".
+-   Add descriptive message on error pages.
+-   Add filters for date formats.
+
+### Changed
+
+-   Remove copyright in footer.
+
 ## [0.0.6] - 2021-01-22
 
 ### Added
@@ -65,7 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.6...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.5...v0.0.6
 [#1]: https://github.com/ManuelGil/alternate-admin/issues/1
 [0.0.5]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.4...v0.0.5
