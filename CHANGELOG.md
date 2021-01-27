@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.8] - 2021-01-25
+## [0.0.9] - 2021-01-26
+
+### Added
 
 -   New "Bulk Course Creation" sub-section to "Courses".
 
 ## [0.0.8] - 2021-01-24
+
+### Added
 
 -   New "Course Without Editing Teachers" sub-section to "Courses".
 -   New "Course Without Teachers" sub-section to "Courses".
