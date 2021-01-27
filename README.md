@@ -1,7 +1,9 @@
 # Alternative Admin for Moodle
 
+[![GitHub Release](https://img.shields.io/github/v/release/ManuelGil/alternate-admin)]()
+[![GitHub Release Date](https://img.shields.io/github/release-date/ManuelGil/alternate-admin)]()
+[![Github All Releases](https://img.shields.io/github/downloads/ManuelGil/alternate-admin/total.svg)]()
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
 
 ![preview](https://raw.githubusercontent.com/ManuelGil/alternate-admin/main/docs/images/preview.png)
 
@@ -63,7 +65,7 @@ $ composer install --no-dev --optimize-autoloader
 
 ## Configure the project
 
--   Copy the [`.env.example`](https://github.com/ManuelGil/alternate-admin/blob/master/.env.example)
+-   Copy the [`.env.example`](./.env.example)
     file and call it `.env`.
 
 -   Create file `error.log` in folder `logs`.
@@ -76,13 +78,17 @@ $ sudo chown www-data: logs/
 
 -   Reset apache2 service.
 
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
 ## Contributing
 
-Thank you for considering contributing to alternative admin. The contribution guide can be found in the [CONTRIBUTING.md](https://github.com/ManuelGil/alternate-admin/blob/master/.github/CONTRIBUTING.md).
+Thank you for considering contributing to alternative admin. The contribution guide can be found in the [CONTRIBUTING.md](./.github/CONTRIBUTING.md).
 
 ## Code of Conduct
 
-In order to ensure that the alternate admin community is welcoming to all, please review and abide by the [CODE_OF_CONDUCT](https://github.com/ManuelGil/alternate-admin/blob/master/.github/CODE_OF_CONDUCT.md).
+In order to ensure that the alternate admin community is welcoming to all, please review and abide by the [CODE_OF_CONDUCT](./.github/CODE_OF_CONDUCT.md).
 
 ## Authors
 

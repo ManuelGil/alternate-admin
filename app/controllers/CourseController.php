@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.8 $ $Date: 01/24/2021 $
+ * @version $Revision: 0.0.9 $ $Date: 01/26/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -409,5 +409,148 @@ class CourseController extends BaseController
 
 		// Render template.
 		return $this->render('/courses/list-users-course.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'bulk-course-creation' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getBulkCourseCreation()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// Parsing the categories.
+		$categories = addslashes(json_encode($DB->get_records('course_categories'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'categories' => $categories
+		);
+
+		// Render template.
+		return $this->render('/courses/bulk-course-creation.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'bulk-course-creation' route. <br/>
+	 * <b>post: </b>access to POST method.
+	 */
+	public function postBulkCourseCreation()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		require_once("{$CFG->dirroot}/course/lib.php");
+
+		// Parsing the post params.
+		$category = (string) $_POST['category'];
+		$fullname = (string) $_POST['fullname'];
+		$shortname = (string) $_POST['shortname'];
+		$separator = (string) $_POST['separator'];
+		$start = (int) $_POST['start'];
+		$count = (int) $_POST['count'];
+
+		// Define the count variables.
+		$successes = 0;
+		$failures = 0;
+
+		// The users has been show in a table component.
+		$result = "<div class=\"table-responsive\">
+                        <table id=\"table\" class=\"table table-striped table-hover table-condensed\">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>fullname</th>
+                                    <th>count</th>
+                                </tr>
+                            </thead>
+							<tbody>";
+
+		// Loop through the users.
+		for ($i = 0; $i < $count; $i++) {
+			// If username exist launch an error.
+			try {
+				$index = $start + $i;
+
+				$data = new \stdClass();
+
+				// Set name.
+				$full = "{$fullname} {$index}";
+				$short = "{$shortname}{$separator}{$index}";
+
+				// Set category
+				$data->category = $category;
+				$data->fullname = $full;
+				$data->shortname = $short;
+
+				$course = create_course($data);
+
+				// Add the new user into the table.
+				$result .= "<tr>
+							<td>{$course->id}</td>
+							<td>{$course->fullname}</td>
+							<td>{$course->shortname}</td>
+						</tr>";
+
+				// Add one user to the count.
+				$successes++;
+			} catch (\Throwable $e) {
+				// Add one fault to the count.
+				$failures++;
+			}
+		}
+
+		// Close the table of users.
+		$result .= "</tbody></table></div>";
+
+		$message = "";
+
+		// Add a message with the number of hits.
+		if ($successes > 0) {
+			$message .= "<div class=\"alert alert-success\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Well done!</strong> {$successes} courses were created.
+        				</div>";
+		}
+
+		// Add a message with the number of failures.
+		if ($failures > 0) {
+			$message .= "<div class=\"alert alert-danger\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Heads up!</strong> {$failures} courses could not be created.
+        				</div>";
+		}
+
+		// Add the result.
+		$message .= "<div class=\"alert alert-info\" role=\"alert\">
+        			      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        			        <span aria-hidden=\"true\">&times;</span>
+        			      </button>
+						  <strong>Oh snap!</strong> The following courses were created:<br><br>
+						  {$result}
+        			</div>";
+
+		// Parsing the categories.
+		$categories = addslashes(json_encode($DB->get_records('course_categories'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'categories' => $categories,
+			'message' => $message
+		);
+
+		// Render template.
+		return $this->render('/courses/bulk-course-creation.mustache', $params);
 	}
 }

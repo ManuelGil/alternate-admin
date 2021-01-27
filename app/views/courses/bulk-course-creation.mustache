@@ -1,18 +1,18 @@
 {{% BLOCKS }}
 {{< layout }}
 
-{{$ title }}{{ COMPANY }} - Bulk User Creation{{/ title }}
+{{$ title }}{{ COMPANY }} - Bulk Course Creation{{/ title }}
 
 {{$ stylesheets }}
 {{/ stylesheets }}
 
 {{$ breadcrumb }}
 <li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
-<li class="breadcrumb-item active" aria-current="page">Users</li>
-<li class="breadcrumb-item active" aria-current="page">Bulk User Creation</li>
+<li class="breadcrumb-item active" aria-current="page">Courses</li>
+<li class="breadcrumb-item active" aria-current="page">Bulk Course Creation</li>
 {{/ breadcrumb }}
 
-{{$ pageheader }}Bulk User Creation{{/ pageheader }}
+{{$ pageheader }}Bulk Course Creation{{/ pageheader }}
 
 {{$ alerts }}
 {{# message }}
@@ -21,15 +21,31 @@
 {{/ alerts }}
 
 {{$ content }}
-<label class="section-title">Bulk User Creation</label>
-<p class="mg-b-20 mg-sm-b-40">Create a large number of users</p>
+<label class="section-title">Bulk Course Creation</label>
+<p class="mg-b-20 mg-sm-b-40">Create a large number of courses</p>
 
 <div id="app">
     <form method="post" name="form" id="form" role="form" ref="form" @submit.prevent="onSubmit" novalidate>
         <div class="form-group">
-            <label class="control-label" for="prefix">Prefix (optional)</label>
-            <input class="form-control" type="text" name="prefix" id="prefix" placeholder="Enter a prefix" value="usr"
-                v-model="prefix">
+            <label class="control-label" for="fullname">Course full name</label>
+            <input class="form-control" type="text" name="fullname" id="fullname" placeholder="Enter a full name"
+				v-model="fullname" required>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="shortname">Course short name</label>
+            <input class="form-control" type="text" name="shortname" id="shortname" placeholder="Enter a short name"
+				value="shrt" v-model="shortname" required>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="category">Course category</label>
+            <select name="category" id="category" required>
+				<option data-placeholder="true"></option>
+                <option v-for="category in categories" :value="category.id">
+                    ${ category.name }
+                </option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -52,7 +68,7 @@
 
         <div class="form-group">
             <p>
-                Create users from <b>`${prefix}${separator}${start}`</b> to <b>`${prefix}${separator}${sum}`</b>
+                Create users from <b>`${shortname}${separator}${start}`</b> to <b>`${shortname}${separator}${sum}`</b>
             </p>
         </div>
 
@@ -70,6 +86,9 @@
 
 {{$ scripts }}
 {{! development version, includes helpful console warnings }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
 <script src="{{ BASE_URL }}assets/js/pristine.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
@@ -81,13 +100,29 @@
         delimiters: ['${', '}'],
         data: function () {
             return {
-                prefix: 'usr',
+				categories: [],
+				fullname: '',
+				shortname: 'shrt',
 				separator: '-',
 				start: 1,
 				count: 1
             }
         },
+        created: function () {
+            this.load()
+        },
+        mounted: function () {
+            new SlimSelect({
+                select: document.querySelector('#category'),
+                placeholder: 'Select a category',
+                hideSelectedOption: true,
+                closeOnSelect: true
+            })
+        },
         methods: {
+            load: function () {
+                this.categories = JSON.parse("{{{ categories }}}")
+            },
             onSubmit: function () {
 				// create the pristine instance
 				var pristine = new Pristine(document.querySelector("#form"))
