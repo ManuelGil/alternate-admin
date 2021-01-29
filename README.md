@@ -39,34 +39,54 @@ This wrapper for Moodle adds a new interface to streamline your administrative t
 
 ### Install the project
 
--   _Development_
+You can install this wrapper via composer with the following commands:
 
-```bash
-$ sudo php composer.phar install
-```
+#### _Development_
 
-or
+-   Required a composer installation.
 
 ```bash
 $ composer install
 ```
 
--   _Production_
+-   Downloading [composer.phar](https://getcomposer.org/download/).
 
 ```bash
-$ sudo php composer.phar install --no-dev --optimize-autoloader
+$ sudo php composer.phar install
 ```
 
-or
+#### _Production_
+
+-   Required a composer installation.
 
 ```bash
 $ composer install --no-dev --optimize-autoloader
+```
+
+-   Downloading [composer.phar](https://getcomposer.org/download/).
+
+```bash
+$ sudo php composer.phar install --no-dev --optimize-autoloader
 ```
 
 ## Configure the project
 
 -   Copy the [`.env.example`](./.env.example)
     file and call it `.env`.
+
+```bash
+$ cp .env.example .env
+```
+
+-   Edit the environment variables in the .env file as you need.
+
+> MODE_DEBUG => show errors
+
+> DOMAIN => moodle installation domain (required)
+
+> MDL_CONFIG => moodle config file path (required)
+
+> COMPANY => company name (displayed in page title)
 
 -   Create file `error.log` in folder `logs`.
 

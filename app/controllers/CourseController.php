@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.9 $ $Date: 01/26/2021 $
+ * @version $Revision: 0.0.10 $ $Date: 01/29/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -75,6 +75,43 @@ class CourseController extends BaseController
 
 		// Render template.
 		return $this->render('/courses/list-courses.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'count-courses' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCountCourses()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count courses by category.
+		$sql = "SELECT		{course_categories}.id,
+							{course_categories}.name,
+							COUNT({course}.id) AS courses
+				FROM		{course_categories}
+				LEFT JOIN	{course}
+					ON		{course_categories}.id = {course}.category
+					AND		{course}.visible = 1
+				GROUP BY	{course_categories}.id;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
+
+		// Render template.
+		return $this->render('/courses/count-courses.mustache', $params);
 	}
 
 	/**
@@ -226,7 +263,7 @@ class CourseController extends BaseController
 					ON		{context}.id = {role_assignments}.contextid
 				    AND 	{role_assignments}.roleid = 3
 				GROUP BY 	{course}.id
-				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+				HAVING 		COUNT({role_assignments}.id) = 0;";
 
 		// Execute the query.
 		$records = $DB->get_records_sql($sql);
@@ -266,7 +303,7 @@ class CourseController extends BaseController
 					ON		{context}.id = {role_assignments}.contextid
 				    AND 	{role_assignments}.roleid = 4
 				GROUP BY 	{course}.id
-				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+				HAVING 		COUNT({role_assignments}.id) = 0;";
 
 		// Execute the query.
 		$records = $DB->get_records_sql($sql);
@@ -306,7 +343,7 @@ class CourseController extends BaseController
 					ON		{context}.id = {role_assignments}.contextid
 				    AND 	{role_assignments}.roleid = 5
 				GROUP BY 	{course}.id
-				HAVING 		COUNT({role_assignments}.contextid) = 0;";
+				HAVING 		COUNT({role_assignments}.id) = 0;";
 
 		// Execute the query.
 		$records = $DB->get_records_sql($sql);

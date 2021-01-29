@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.9 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.0.10 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -97,7 +97,7 @@ class EnrollmentController extends BaseController
 
 		// Loop through the courses.
 		foreach ($_POST['courses'] as $courseid) {
-			$context = get_context_instance(CONTEXT_COURSE, $courseid);
+			$context = \context_course::instance($courseid);
 
 			// Loop through the users.
 			foreach ($_POST['users'] as $userid) {

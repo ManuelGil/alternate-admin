@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.10] - 2021-01-29
+
+### Added
+
+-   New "Count Courses" sub-section to "Courses".
+
+### Changed
+
+-   Change some titles of the views.
+-   Change the "README" to better explain the installation process.
+
 ## [0.0.9] - 2021-01-26
 
 ### Added
@@ -93,7 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.9...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.10...HEAD
+[0.0.10]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.9...v0.0.10
 [0.0.9]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.6...v0.0.7
