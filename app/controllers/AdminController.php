@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.10 $ $Date: 01/29/2021 $
+ * @version $Revision: 0.1.0 $ $Date: 01/30/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -60,7 +60,12 @@ class AdminController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the admin users.
-		$admins = addslashes(json_encode(get_admins(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$admins = addslashes(
+			json_encode(
+				get_admins(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -93,7 +98,12 @@ class AdminController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -131,7 +141,12 @@ class AdminController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -168,7 +183,12 @@ class AdminController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,

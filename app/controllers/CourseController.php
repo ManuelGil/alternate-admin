@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.10 $ $Date: 01/29/2021 $
+ * @version $Revision: 0.1.0 $ $Date: 01/30/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -63,7 +63,12 @@ class CourseController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -100,7 +105,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -115,10 +125,10 @@ class CourseController extends BaseController
 	}
 
 	/**
-	 * This method load the 'count-editingteachers' route. <br/>
+	 * This method load the 'count-teachers' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getCountEditingteachers()
+	public function getCountTeachers()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
@@ -126,7 +136,7 @@ class CourseController extends BaseController
 		// SQL Query for count editingteachers.
 		$sql = "SELECT		{course}.id,
 							{course}.fullname AS course,
-							COUNT({course}.id) AS editingteachers
+							COUNT({course}.id) AS teachers
 				FROM		{role_assignments}
 				JOIN		{context}
 					ON		{role_assignments}.contextid = {context}.id
@@ -137,13 +147,18 @@ class CourseController extends BaseController
 					ON		{context}.instanceid = {course}.id
 				WHERE		{role_assignments}.roleid = 3
 				GROUP BY	{course}.id
-				ORDER BY	editingteachers ASC;";
+				ORDER BY	teachers ASC;";
 
 		// Execute the query.
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -154,14 +169,14 @@ class CourseController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/courses/count-editingteachers.mustache', $params);
+		return $this->render('/courses/count-teachers.mustache', $params);
 	}
 
 	/**
-	 * This method load the 'count-teachers' route. <br/>
+	 * This method load the 'count-non-editing-teachers' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getCountTeachers()
+	public function getCountNonEditingTeachers()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
@@ -186,7 +201,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -197,7 +217,7 @@ class CourseController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/courses/count-teachers.mustache', $params);
+		return $this->render('/courses/count-non-editing-teachers.mustache', $params);
 	}
 
 	/**
@@ -229,7 +249,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -244,10 +269,10 @@ class CourseController extends BaseController
 	}
 
 	/**
-	 * This method load the 'course-without-editingteachers' route. <br/>
+	 * This method load the 'course-without-teachers' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getCourseWithoutEditingteachers()
+	public function getCourseWithoutTeachers()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
@@ -269,7 +294,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -280,14 +310,14 @@ class CourseController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/courses/course-without-editingteachers.mustache', $params);
+		return $this->render('/courses/course-without-teachers.mustache', $params);
 	}
 
 	/**
-	 * This method load the 'course-without-teachers' route. <br/>
+	 * This method load the 'course-without-non-editing-teachers' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getCourseWithoutTeachers()
+	public function getCourseWithoutNonEditingTeachers()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
@@ -309,7 +339,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -320,7 +355,7 @@ class CourseController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/courses/course-without-teachers.mustache', $params);
+		return $this->render('/courses/course-without-non-editing-teachers.mustache', $params);
 	}
 
 	/**
@@ -349,7 +384,12 @@ class CourseController extends BaseController
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
-		$items = addslashes(json_encode($records, JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -382,15 +422,16 @@ class CourseController extends BaseController
 							{user}.firstname,
 							{user}.lastname,
 							{role}.shortname AS role
-                FROM        {course}
-                JOIN  		{enrol}
-                        ON  {enrol}.courseid = {course}.id
-                JOIN  		{user_enrolments}
-                        ON  {user_enrolments}.enrolid = {enrol}.id
-                JOIN  		{user}
-                        ON  {user_enrolments}.userid = {user}.id
+				FROM		{role_assignments}
+				JOIN		{context}
+					ON		{role_assignments}.contextid = {context}.id
+					AND		{context}.contextlevel = 50
 				JOIN 		{role}
-						ON 	{enrol}.roleid = {role}.id
+						ON 	{role_assignments}.roleid = {role}.id
+				JOIN		{user}
+					ON		{user}.id = {role_assignments}.userid
+				JOIN		{course}
+					ON		{context}.instanceid = {course}.id
                 WHERE       {course}.id = :course";
 
 		// Create a log channel.
@@ -434,7 +475,12 @@ class CourseController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -458,7 +504,12 @@ class CourseController extends BaseController
 		global $CFG, $DB, $USER;
 
 		// Parsing the categories.
-		$categories = addslashes(json_encode($DB->get_records('course_categories'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$categories = addslashes(
+			json_encode(
+				$DB->get_records('course_categories'),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -528,10 +579,10 @@ class CourseController extends BaseController
 
 				// Add the new user into the table.
 				$result .= "<tr>
-							<td>{$course->id}</td>
-							<td>{$course->fullname}</td>
-							<td>{$course->shortname}</td>
-						</tr>";
+								<td>{$course->id}</td>
+								<td>{$course->fullname}</td>
+								<td>{$course->shortname}</td>
+							</tr>";
 
 				// Add one user to the count.
 				$successes++;
@@ -576,7 +627,12 @@ class CourseController extends BaseController
         			</div>";
 
 		// Parsing the categories.
-		$categories = addslashes(json_encode($DB->get_records('course_categories'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$categories = addslashes(
+			json_encode(
+				$DB->get_records('course_categories'),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,

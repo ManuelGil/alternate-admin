@@ -1,7 +1,7 @@
 {{% BLOCKS }}
 {{< layout }}
 
-{{$ title }}{{ COMPANY }} - Course Without Editing Teachers{{/ title }}
+{{$ title }}{{ COMPANY }} - Count Non-editing Teachers{{/ title }}
 
 {{$ stylesheets }}
 {{/ stylesheets }}
@@ -9,14 +9,14 @@
 {{$ breadcrumb }}
 <li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
 <li class="breadcrumb-item active" aria-current="page">Courses</li>
-<li class="breadcrumb-item active" aria-current="page">Course Without Editing Teachers</li>
+<li class="breadcrumb-item active" aria-current="page">Count Non-editing Teachers</li>
 {{/ breadcrumb }}
 
-{{$ pageheader }}Course Without Editing Teachers{{/ pageheader }}
+{{$ pageheader }}Count Non-editing Teachers{{/ pageheader }}
 
 {{$ content }}
 <label class="section-title">List Courses</label>
-<p class="mg-b-20 mg-sm-b-40">Courses without Teachers</p>
+<p class="mg-b-20 mg-sm-b-40">Teacher count in each course</p>
 
 <div id="app" class="table-responsive">
 	<table id="table" class="table table-striped table-hover table-condensed">
@@ -24,12 +24,14 @@
 			<tr>
 				<th>id</th>
 				<th>course</th>
+				<th>teachers</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr v-for="item in items">
 				<td>${ item.id }</td>
-				<td>${ item.fullname }</td>
+				<td>${ item.course }</td>
+				<td>${ item.teachers }</td>
 			</tr>
 		</tbody>
     </table>

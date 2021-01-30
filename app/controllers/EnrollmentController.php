@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.0.10 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.1.0 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -56,17 +56,32 @@ class EnrollmentController extends BaseController
 	 */
 	public function getBulkUserEnrollment()
 	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
+		// Imports Config and Current User.
+		global $CFG, $USER;
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		// Parsing the users.
-		$users = addslashes(json_encode(get_users_listing(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		// Parsing the records.
-		$roles = addslashes(json_encode($DB->get_records('role'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$roles = addslashes(
+			json_encode(
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -88,8 +103,8 @@ class EnrollmentController extends BaseController
 	 */
 	public function postBulkUserEnrollment()
 	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
+		// Imports Config and Current User.
+		global $CFG, $USER;
 
 		// Define the count variables.
 		$successes = 0;
@@ -137,13 +152,28 @@ class EnrollmentController extends BaseController
 		}
 
 		// Parsing the users.
-		$users = addslashes(json_encode(get_users_listing(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		// Parsing the records.
-		$roles = addslashes(json_encode($DB->get_records('role'), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$roles = addslashes(
+			json_encode(
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -170,7 +200,12 @@ class EnrollmentController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -234,7 +269,12 @@ class EnrollmentController extends BaseController
         			</div>";
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -259,10 +299,20 @@ class EnrollmentController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		// Parsing the users.
-		$users = addslashes(json_encode(get_users_listing(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
@@ -347,7 +397,12 @@ class EnrollmentController extends BaseController
         			</div>";
 
 		// Parsing the courses.
-		$courses = addslashes(json_encode(get_courses(), JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT));
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
 
 		$params = array(
 			'COMPANY' => COMPANY,
