@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2021-02-05
+
+### Added
+
+-   New "Switch Role" sub-section to "Enrollments".
+
 ## [0.1.0] - 2021-01-30
 
 ### Changed
@@ -14,8 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Change some file names.
 -   Change query to moodle roles.
 -   Fix issue in roles when list users by course.
-
-## [Unreleased]
 
 ## [0.0.10] - 2021-01-29
 
@@ -46,9 +50,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   New "Users Created" sub-section to "Admin".
--   New "Logged Once" sub-section to "Admin".
--   New "Logged Last Days" sub-section to "Admin".
+-   New "Users Created" sub-section to "Admins".
+-   New "Logged Once" sub-section to "Admins".
+-   New "Logged Last Days" sub-section to "Admins".
 -   Add descriptive message on error pages.
 -   Add filters for date formats.
 
@@ -60,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   New "Dynamic Unenrollment" sub-section to "Enrollment".
+-   New "Dynamic Unenrollment" sub-section to "Enrollments".
 
 ### Changed
 
@@ -89,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   New "Bulk User Unenrollment" sub-section to "Enrollment".
+-   New "Bulk User Unenrollment" sub-section to "Enrollments".
 -   New "List Users" AJAX request route in "Courses".
 -   New "List Courses" AJAX request route in "Users".
 
@@ -99,8 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   New "Count Editing Teachers" sub-section to "Courses".
 -   New "Count Teachers" sub-section to "Courses".
--   New section "Enrollment".
--   New "Bulk User Enrollment" sub-section to "Enrollment".
+-   New section "Enrollments".
+-   New "Bulk User Enrollment" sub-section to "Enrollments".
 
 ### Changed
 
@@ -114,7 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.10...v0.1.0
 [0.0.10]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.9...v0.0.10
 [0.0.9]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.8...v0.0.9

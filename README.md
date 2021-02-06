@@ -80,13 +80,13 @@ $ cp .env.example .env
 
 -   Edit the environment variables in the .env file as you need.
 
-> MODE_DEBUG => show errors
+    > MODE_DEBUG => show errors
 
-> DOMAIN => moodle installation domain (required)
+    > DOMAIN => moodle installation domain (required)
 
-> MDL_CONFIG => moodle config file path (required)
+    > MDL_CONFIG => moodle config file path (required)
 
-> COMPANY => company name (displayed in page title)
+    > COMPANY => company name (displayed in page title)
 
 -   Create file `error.log` in folder `logs`.
 

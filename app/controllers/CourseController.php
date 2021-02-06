@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.0 $ $Date: 01/30/2021 $
+ * @version $Revision: 0.1.1 $ $Date: 02/05/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -408,9 +408,9 @@ class CourseController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $course - the course id
+	 * @param int $courseid - the course id
 	 */
-	public function getListUsers($course = 0)
+	public function getListUsers($courseid = 0)
 	{
 		// Imports Database.
 		global $DB;
@@ -427,12 +427,12 @@ class CourseController extends BaseController
 					ON		{role_assignments}.contextid = {context}.id
 					AND		{context}.contextlevel = 50
 				JOIN 		{role}
-						ON 	{role_assignments}.roleid = {role}.id
+					ON 		{role_assignments}.roleid = {role}.id
 				JOIN		{user}
 					ON		{user}.id = {role_assignments}.userid
 				JOIN		{course}
 					ON		{context}.instanceid = {course}.id
-                WHERE       {course}.id = :course";
+                WHERE       {course}.id = :courseid";
 
 		// Create a log channel.
 		$log = new Logger('App');
@@ -445,7 +445,7 @@ class CourseController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode($DB->get_records_sql($sql, ['course' => (int) $course]));
+			return json_encode($DB->get_records_sql($sql, ['courseid' => $courseid]));
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {

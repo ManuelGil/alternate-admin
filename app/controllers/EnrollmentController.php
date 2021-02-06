@@ -27,11 +27,14 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.0 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.1.1 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
 namespace App\Controllers;
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * EnrollmentController class
@@ -324,7 +327,7 @@ class EnrollmentController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/enrollments/Dynamic-unenrollment.mustache', $params);
+		return $this->render('/enrollments/dynamic-unenrollment.mustache', $params);
 	}
 
 	/**
@@ -414,6 +417,183 @@ class EnrollmentController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/enrollments/Dynamic-unenrollment.mustache', $params);
+		return $this->render('/enrollments/dynamic-unenrollment.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'list-assignments' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 *
+	 * @param int $courseid - the course id
+	 */
+	public function getListAssignments($courseid = 0)
+	{
+		// Imports Database.
+		global $DB;
+
+		// Gets roles.
+		$sql = "SELECT      {role_assignments}.id,
+							{user}.username,
+							{user}.email,
+							{user}.firstname,
+							{user}.lastname,
+							{role}.shortname AS role
+				FROM		{role_assignments}
+				JOIN		{context}
+					ON		{role_assignments}.contextid = {context}.id
+					AND		{context}.contextlevel = 50
+				JOIN 		{role}
+					ON 		{role_assignments}.roleid = {role}.id
+				JOIN		{user}
+					ON		{user}.id = {role_assignments}.userid
+				JOIN		{course}
+					ON		{context}.instanceid = {course}.id
+                WHERE       {course}.id = :courseid";
+
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
+
+			// Execute and parse the query.
+			return json_encode($DB->get_records_sql($sql, ['courseid' => $courseid]));
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
+	}
+
+	/**
+	 * This method load the 'switch-role' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getSwitchRole()
+	{
+		// Imports Config and Current User.
+		global $CFG, $USER;
+
+		// Parsing the courses.
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		// Parsing the records.
+		$roles = addslashes(
+			json_encode(
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses,
+			'roles' => $roles
+		);
+
+		// Render template.
+		return $this->render('/enrollments/switch-role.mustache', $params);
+	}
+	/**
+	 * This method load the 'switch-role' route. <br/>
+	 * <b>post: </b>access to POST method.
+	 */
+	public function postSwitchRole()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// Define the count variables.
+		$successes = 0;
+		$failures = 0;
+
+		// Loop through the users.
+		foreach ($_POST['users'] as $assignmentid) {
+			try {
+				$DB->set_field('role_assignments', 'roleid', $_POST['role'], ['id' => $assignmentid]);
+
+				// Add one user to the count.
+				$successes++;
+			} catch (\Throwable $e) {
+				// Add one fault to the count.
+				$failures++;
+			}
+		}
+
+		$message = "";
+
+		// Add a message with the number of hits.
+		if ($successes > 0) {
+			$message .= "<div class=\"alert alert-success\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Well done!</strong> {$successes} users were updated.
+        				</div>";
+		}
+
+		// Add a message with the number of failures.
+		if ($failures > 0) {
+			$message .= "<div class=\"alert alert-danger\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Heads up!</strong> {$failures} users could not be updated.
+        				</div>";
+		}
+
+		// Parsing the courses.
+		$courses = addslashes(
+			json_encode(
+				get_courses(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		// Parsing the records.
+		$roles = addslashes(
+			json_encode(
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'courses' => $courses,
+			'roles' => $roles,
+			'message' => $message
+		);
+
+		// Render template.
+		return $this->render('/enrollments/switch-role.mustache', $params);
 	}
 }

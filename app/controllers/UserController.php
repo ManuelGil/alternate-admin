@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.0 $ $Date: 01/30/2021 $
+ * @version $Revision: 0.1.1 $ $Date: 02/05/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -215,9 +215,9 @@ class UserController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $user - the user id
+	 * @param int $userid - the user id
 	 */
-	public function getListCourses($user = 0)
+	public function getListCourses($userid = 0)
 	{
 		// Create a log channel.
 		$log = new Logger('App');
@@ -230,7 +230,7 @@ class UserController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode(enrol_get_users_courses((int) $user));
+			return json_encode(enrol_get_users_courses($userid));
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {
