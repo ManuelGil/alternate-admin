@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2021-02-06
+
+### Added
+
+-   New "Suspend User" sub-section to "Users".
+
 ## [0.1.1] - 2021-02-05
 
 ### Added
@@ -118,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.10...v0.1.0
 [0.0.10]: https://github.com/ManuelGil/alternate-admin/compare/v0.0.9...v0.0.10

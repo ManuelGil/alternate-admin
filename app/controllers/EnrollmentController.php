@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.1 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.1.2 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -519,6 +519,7 @@ class EnrollmentController extends BaseController
 		// Render template.
 		return $this->render('/enrollments/switch-role.mustache', $params);
 	}
+
 	/**
 	 * This method load the 'switch-role' route. <br/>
 	 * <b>post: </b>access to POST method.

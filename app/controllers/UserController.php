@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.1 $ $Date: 02/05/2021 $
+ * @version $Revision: 0.1.2 $ $Date: 02/06/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -277,5 +277,103 @@ class UserController extends BaseController
 
 		// Render template.
 		return $this->render('/users/list-courses-user.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'suspend-user' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getSuspendUser()
+	{
+		// Imports Config and Current User.
+		global $CFG, $USER;
+
+		// Parsing the users.
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'users' => $users
+		);
+
+		// Render template.
+		return $this->render('/users/suspend-user.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'suspend-user' route. <br/>
+	 * <b>post: </b>access to POST method.
+	 */
+	public function postSuspendUser()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// Define the count variables.
+		$successes = 0;
+		$failures = 0;
+
+		// Loop through the users.
+		foreach ($_POST['users'] as $userid) {
+			try {
+				$DB->set_field('user', 'suspended', '1', ['id' => $userid]);
+
+				// Add one user to the count.
+				$successes++;
+			} catch (\Throwable $e) {
+				// Add one fault to the count.
+				$failures++;
+			}
+		}
+
+		$message = "";
+
+		// Add a message with the number of hits.
+		if ($successes > 0) {
+			$message .= "<div class=\"alert alert-success\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Well done!</strong> {$successes} users were suspended.
+        				</div>";
+		}
+
+		// Add a message with the number of failures.
+		if ($failures > 0) {
+			$message .= "<div class=\"alert alert-danger\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Heads up!</strong> {$failures} users could not be suspended.
+        				</div>";
+		}
+
+		// Parsing the users.
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'users' => $users,
+			'message' => $message
+		);
+
+		// Render template.
+		return $this->render('/users/suspend-user.mustache', $params);
 	}
 }

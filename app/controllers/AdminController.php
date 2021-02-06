@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.1 $ $Date: 02/05/2021 $
+ * @version $Revision: 0.1.2 $ $Date: 02/06/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -200,5 +200,46 @@ class AdminController extends BaseController
 
 		// Render template.
 		return $this->render('/admins/logged-last-days.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'list-suspended' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getListSuspended()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count users.
+		$sql = "SELECT      id,
+							username,
+							email,
+							firstname,
+							lastname
+				FROM		{user}
+				WHERE       suspended = 1;";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the users.
+		$users = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'users' => $users
+		);
+
+		// Render template.
+		return $this->render('/admins/list-suspended.mustache', $params);
 	}
 }
