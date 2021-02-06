@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   New "Suspend User" sub-section to "Users".
+-   New "List Suspended" sub-section to "Admins".
 
 ## [0.1.1] - 2021-02-05
 
