@@ -33,47 +33,65 @@
 
 namespace App\Controllers;
 
-use Mustache_Engine;
-use Mustache_Loader_FilesystemLoader;
-
 /**
- * BaseController class.
+ * ResourceController class
+ *
+ * @extends BaseController
  */
-class BaseController
+class ActivityController extends BaseController
 {
 
-	protected $templateEngine;
+	/**
+	 * This method redirect to BASE URL when access to parent section. <br/>
+	 * <b>post: </b>access to any method (POST, GET, DELETE, OPTIONS, HEAD etc...).
+	 */
+	public function anyIndex()
+	{
+		header('location: ' . BASE_URL);
+	}
+
 
 	/**
-	 * This method construct a new Controller.
+	 * This method load the 'list-users' route. <br/>
+	 * <b>post: </b>access to GET method.
 	 */
-	public function __construct()
+	public function getListActivities()
 	{
-        // Setting an intance for Mustache Engine.
-		$this->templateEngine = new Mustache_Engine(
-			array(
-				'loader' => new Mustache_Loader_FilesystemLoader(
-					__DIR__ . '/../views'
-				),
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		// SQL Query for count users.
+		$sql = "SELECT		{course}.id,
+							{course}.fullname,
+				        	{modules}.name,
+				        	COUNT({modules}.id) AS activities
+				FROM		{course_modules}
+				JOIN		{course}
+					ON		{course_modules}.course = {course}.id
+				JOIN		{modules}
+					ON		{course_modules}.module = {modules}.id
+				GROUP BY	{course}.id, {modules}.name";
+
+		// Execute the query.
+		$records = $DB->get_records_sql($sql);
+
+		// Parsing the records.
+		$items = addslashes(
+			json_encode(
+				$records,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
 			)
 		);
 
-        // Create a new filter for md5 encoding.
-		$this->templateEngine->addHelper('md5', function (string $text) {
-			return md5(strtolower(trim($text)));
-		});
-	}
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'items' => $items
+		);
 
-	/**
-	 * This method render the template.
-	 *
-	 * @param string $filename - the filename of template.
-	 * @param array $params - the data with context of the template.
-	 * @return string the template rendered.
-	 */
-	protected function render($fileName, $data = [])
-	{
-        // Render the template.
-		return $this->templateEngine->render($fileName, $data);
+		// Render template.
+		return $this->render('/activities/list-activities.mustache', $params);
 	}
 }

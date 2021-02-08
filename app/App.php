@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.2 $ $Date: 02/06/2021 $
+ * @version $Revision: 0.2.0 $ $Date: 02/07/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -88,6 +88,7 @@ class App
 
 		$router->group(['before' => 'auth'], function ($router) {
 			$router->controller('/', Controllers\MainController::class);
+			$router->controller('/activities', Controllers\ActivityController::class);
 			$router->controller('/admins', Controllers\AdminController::class);
 			$router->controller('/courses', Controllers\CourseController::class);
 			$router->controller('/enrollments', Controllers\EnrollmentController::class);

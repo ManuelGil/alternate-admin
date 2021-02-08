@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.2 $ $Date: 02/06/2021 $
+ * @version $Revision: 0.2.0 $ $Date: 02/07/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -112,10 +112,10 @@ class UserController extends BaseController
 		global $CFG, $USER;
 
 		// Parsing the post params.
-		$prefix = (string) $_POST['prefix'];
-		$separator = (string) $_POST['separator'];
-		$start = (int) $_POST['start'];
-		$count = (int) $_POST['count'];
+		$prefix = $_POST['prefix'] ?? "";
+		$separator = $_POST['separator'] ?? "";
+		$start = $_POST['start'] ?? 0;
+		$count = $_POST['count'] ?? 0;
 
 		// Define the count variables.
 		$successes = 0;
@@ -321,16 +321,18 @@ class UserController extends BaseController
 		$successes = 0;
 		$failures = 0;
 
-		// Loop through the users.
-		foreach ($_POST['users'] as $userid) {
-			try {
-				$DB->set_field('user', 'suspended', '1', ['id' => $userid]);
+		if (isset($_POST['users'])) {
+			// Loop through the users.
+			foreach ($_POST['users'] as $userid) {
+				try {
+					$DB->set_field('user', 'suspended', '1', ['id' => $userid]);
 
-				// Add one user to the count.
-				$successes++;
-			} catch (\Throwable $e) {
-				// Add one fault to the count.
-				$failures++;
+					// Add one user to the count.
+					$successes++;
+				} catch (\Throwable $e) {
+					// Add one fault to the count.
+					$failures++;
+				}
 			}
 		}
 

@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.2 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.2.0 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -113,20 +113,22 @@ class EnrollmentController extends BaseController
 		$successes = 0;
 		$failures = 0;
 
-		// Loop through the courses.
-		foreach ($_POST['courses'] as $courseid) {
-			$context = \context_course::instance($courseid);
+		if (isset($_POST['courses']) && isset($_POST['users']) && isset($_POST['role'])) {
+			// Loop through the courses.
+			foreach ($_POST['courses'] as $courseid) {
+				$context = \context_course::instance($courseid);
 
-			// Loop through the users.
-			foreach ($_POST['users'] as $userid) {
-				if (!is_enrolled($context, $userid)) {
-					try {
-						enrol_try_internal_enrol($courseid, $userid, $_POST['role'], time());
+				// Loop through the users.
+				foreach ($_POST['users'] as $userid) {
+					if (!is_enrolled($context, $userid)) {
+						try {
+							enrol_try_internal_enrol($courseid, $userid, $_POST['role'], time());
 
-						$successes++;
-					} catch (\Throwable $e) {
-						// Add one fault to the count.
-						$failures++;
+							$successes++;
+						} catch (\Throwable $e) {
+							// Add one fault to the count.
+							$failures++;
+						}
 					}
 				}
 			}
@@ -242,19 +244,21 @@ class EnrollmentController extends BaseController
                             </thead>
 							<tbody>";
 
-		// Get intances of enrol table.
-		$instances = $DB->get_records('enrol', array('courseid' => $_POST['course']));
+		if (isset($_POST['course']) && isset($_POST['users'])) {
+			// Get intances of enrol table.
+			$instances = $DB->get_records('enrol', array('courseid' => $_POST['course']));
 
-		foreach ($_POST['users'] as $userid) {
-			foreach ($instances as $instance) {
-				$plugin = enrol_get_plugin($instance->enrol);
-				$plugin->unenrol_user($instance, $userid);
+			foreach ($_POST['users'] as $userid) {
+				foreach ($instances as $instance) {
+					$plugin = enrol_get_plugin($instance->enrol);
+					$plugin->unenrol_user($instance, $userid);
 
-				// Add the new user into the table.
-				$result .= "<tr>
-								<td>{$userid}</td>
-								<td>" . get_class($plugin) . "</td>
-							</tr>";
+					// Add the new user into the table.
+					$result .= "<tr>
+									<td>{$userid}</td>
+									<td>" . get_class($plugin) . "</td>
+								</tr>";
+				}
 			}
 		}
 
@@ -350,38 +354,42 @@ class EnrollmentController extends BaseController
                             </thead>
 							<tbody>";
 
-		if ($_POST['search'] == 'course') {
-			// Get intances of enrol table.
-			$instances = $DB->get_records('enrol', array('courseid' => $_POST['course']));
+		if (isset($_POST['search']) && $_POST['search'] == 'course') {
+			if (isset($_POST['course']) && isset($_POST['users'])) {
+				// Get intances of enrol table.
+				$instances = $DB->get_records('enrol', array('courseid' => $_POST['course']));
 
-			foreach ($_POST['users'] as $userid) {
-				foreach ($instances as $instance) {
-					$plugin = enrol_get_plugin($instance->enrol);
-					$plugin->unenrol_user($instance, $userid);
+				foreach ($_POST['users'] as $userid) {
+					foreach ($instances as $instance) {
+						$plugin = enrol_get_plugin($instance->enrol);
+						$plugin->unenrol_user($instance, $userid);
 
-					// Add the new user into the table.
-					$result .= "<tr>
-									<td>{$userid}</td>
-									<td>" . get_class($plugin) . "</td>
-								</tr>";
+						// Add the new user into the table.
+						$result .= "<tr>
+										<td>{$userid}</td>
+										<td>" . get_class($plugin) . "</td>
+									</tr>";
+					}
 				}
 			}
 		}
 
-		if ($_POST['search'] == 'user') {
-			foreach ($_POST['courses'] as $courseid) {
-				// Get intances of enrol table.
-				$instances = $DB->get_records('enrol', array('courseid' => $courseid));
+		if (isset($_POST['search']) && $_POST['search'] == 'user') {
+			if (isset($_POST['courses']) && isset($_POST['user'])) {
+				foreach ($_POST['courses'] as $courseid) {
+					// Get intances of enrol table.
+					$instances = $DB->get_records('enrol', array('courseid' => $courseid));
 
-				foreach ($instances as $instance) {
-					$plugin = enrol_get_plugin($instance->enrol);
-					$plugin->unenrol_user($instance, $_POST['user']);
+					foreach ($instances as $instance) {
+						$plugin = enrol_get_plugin($instance->enrol);
+						$plugin->unenrol_user($instance, $_POST['user']);
 
-					// Add the new user into the table.
-					$result .= "<tr>
-									<td>{$_POST['user']}</td>
-									<td>" . get_class($plugin) . "</td>
-								</tr>";
+						// Add the new user into the table.
+						$result .= "<tr>
+										<td>{$_POST['user']}</td>
+										<td>" . get_class($plugin) . "</td>
+									</tr>";
+					}
 				}
 			}
 		}
@@ -533,16 +541,18 @@ class EnrollmentController extends BaseController
 		$successes = 0;
 		$failures = 0;
 
-		// Loop through the users.
-		foreach ($_POST['users'] as $assignmentid) {
-			try {
-				$DB->set_field('role_assignments', 'roleid', $_POST['role'], ['id' => $assignmentid]);
+		if (isset($_POST['users']) && isset($_POST['role'])) {
+			// Loop through the users.
+			foreach ($_POST['users'] as $assignmentid) {
+				try {
+					$DB->set_field('role_assignments', 'roleid', $_POST['role'], ['id' => $assignmentid]);
 
-				// Add one user to the count.
-				$successes++;
-			} catch (\Throwable $e) {
-				// Add one fault to the count.
-				$failures++;
+					// Add one user to the count.
+					$successes++;
+				} catch (\Throwable $e) {
+					// Add one fault to the count.
+					$failures++;
+				}
 			}
 		}
 

@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.1.2 $ $Date: 02/06/2021 $
+ * @version $Revision: 0.2.0 $ $Date: 02/07/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -535,12 +535,12 @@ class CourseController extends BaseController
 		require_once("{$CFG->dirroot}/course/lib.php");
 
 		// Parsing the post params.
-		$category = (string) $_POST['category'];
-		$fullname = (string) $_POST['fullname'];
-		$shortname = (string) $_POST['shortname'];
-		$separator = (string) $_POST['separator'];
-		$start = (int) $_POST['start'];
-		$count = (int) $_POST['count'];
+		$category = $_POST['category'] ?? "";
+		$fullname = $_POST['fullname'] ?? "";
+		$shortname = $_POST['shortname'] ?? "";
+		$separator = $_POST['separator'] ?? "";
+		$start = $_POST['start'] ?? 0;
+		$count = $_POST['count'] ?? 0;
 
 		// Define the count variables.
 		$successes = 0;
