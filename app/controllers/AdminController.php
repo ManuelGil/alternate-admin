@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.1 $ $Date: 02/11/2021 $
+ * @version $Revision: 0.2.2 $ $Date: 02/12/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 

@@ -1,0 +1,196 @@
+{{% BLOCKS }}
+{{< layout }}
+
+{{$ title }}{{ COMPANY }} - Edit User{{/ title }}
+
+{{$ stylesheets }}
+{{/ stylesheets }}
+
+{{$ breadcrumb }}
+<li class="breadcrumb-item"><a href="{{ BASE_URL }}">Admin</a></li>
+<li class="breadcrumb-item active" aria-current="page">Users</li>
+<li class="breadcrumb-item active" aria-current="page">Edit User</li>
+{{/ breadcrumb }}
+
+{{$ pageheader }}Edit User{{/ pageheader }}
+
+{{$ alerts }}
+{{# message }}
+{{{ message }}}
+{{/ message }}
+{{/ alerts }}
+
+{{$ content }}
+<label class="section-title">Edit User</label>
+<p class="mg-b-20 mg-sm-b-40">Edit User</p>
+
+<div id="app">
+    <form method="post" name="form" id="form" role="form" ref="form" @submit.prevent="onSubmit" novalidate>
+        <div class="form-group">
+            <label class="control-label" for="userid">Users</label>
+            <select name="userid" id="userid" v-model="userid" required>
+				<option data-placeholder="true"></option>
+                <option v-for="user in users" :value="user.id">
+                    ${ user.username } - ${ user.firstname } ${ user.lastname } - ${ user.email }
+                </option>
+            </select>
+        </div>
+
+		<div v-show="userid != ''">
+			<div class="form-group">
+				<label class="control-label" for="username">Username</label>
+				<input class="form-control" type="text" name="username" id="username">
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="suspended">Suspended account</label>
+				<br/>
+				<label class="switch">
+					<input type="checkbox" name="suspended" id="suspended">
+					<span class="slider round"></span>
+				</label>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="password">New password</label>
+				<i class="icon fa fa-eye fa-fw" id="eye" @click="showPass()"></i>
+				<input class="form-control" type="password" name="password" id="password" placeholder="Click to enter text 🖊">
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="forcepasschange">Force password change</label>
+				<br/>
+				<label class="switch">
+					<input type="checkbox" name="forcepasschange" id="forcepasschange">
+					<span class="slider round"></span>
+				</label>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="firstname">First name</label>
+				<input class="form-control" type="text" name="firstname" id="firstname" required>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="lastname">Surname</label>
+				<input class="form-control" type="text" name="lastname" id="lastname" required>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="email">Email address</label>
+				<input class="form-control" type="text" name="email" id="email">
+			</div>
+		</div>
+
+        <div id="spinner" class="form-group text-center" style="display: none;">
+            <i class="fa fa-spinner fa-3x fa-pulse"></i>
+            <p>Wait, in progress...</p>
+        </div>
+
+        <div class="form-group">
+            <button id="btnSubmit" type="submit" class="btn btn-primary" form="form">SUBMIT</button>
+        </div>
+    </form>
+</div>
+
+<style>
+.switch{position:relative;display:inline-block;width:60px;height:34px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:.4s;transition:.4s}
+.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background-color:#fff;-webkit-transition:.4s;transition:.4s}
+input:checked+.slider{background-color:#2196f3}
+input:focus+.slider{box-shadow:0 0 1px #2196f3}
+input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:translateX(26px);transform:translateX(26px)}
+.slider.round{border-radius:34px}
+.slider.round:before{border-radius:50%}
+</style>
+{{/ content }}
+
+{{$ scripts }}
+{{! development version, includes helpful console warnings }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
+<script src="{{ BASE_URL }}assets/js/pristine.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        delimiters: ['${', '}'],
+        data: function () {
+            return {
+				users: [],
+				userid: ''
+            }
+        },
+        created: function () {
+            this.load()
+        },
+        mounted: function () {
+            new SlimSelect({
+                select: document.querySelector('#userid'),
+                placeholder: 'Select an user',
+                hideSelectedOption: true,
+                closeOnSelect: true,
+				onChange: (info) => {
+                    axios.get(`{{ BASE_URL }}users/user-data/${info.value}`)
+                        .then(response => {
+                            if (response.status == 200) {
+								let user = response.data
+
+								document.querySelector('#username').value = user.username
+								document.querySelector('#suspended').checked = (user.suspended == 1)
+								document.querySelector('#firstname').value = user.firstname
+								document.querySelector('#lastname').value = user.lastname
+								document.querySelector('#email').value = user.email
+                            }
+                        })
+				}
+            })
+        },
+        methods: {
+            load: function () {
+                this.users = JSON.parse("{{{ users }}}")
+            },
+			showPass: function () {
+				const input = document.querySelector('#password')
+				const eye = document.querySelector('#eye')
+
+				if (input.type == 'password') {
+					input.type = 'text'
+					eye.style.color = 'blue'
+				} else {
+					input.type = 'password'
+					eye.style.color = '#868ba1'
+				}
+			},
+            onSubmit: function () {
+				// create the pristine instance
+				var pristine = new Pristine(document.querySelector("#form"))
+
+				if (pristine.validate()) {
+					swal({
+						text: "Are you sure you want to do this?",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true
+					})
+					.then((value) => {
+						if (value) {
+							document.querySelector('#btnSubmit').disabled = true
+							document.querySelector('#spinner').style.display = 'block'
+							document.querySelector('#form').submit()
+						}
+					})
+				}
+            }
+        }
+    })
+</script>
+{{/ scripts }}
+{{/ layout }}

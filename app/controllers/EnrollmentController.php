@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.1 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.2.2 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -470,7 +470,14 @@ class EnrollmentController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode($DB->get_records_sql($sql, ['courseid' => $courseid]));
+			return json_encode(
+				$DB->get_records_sql(
+					$sql,
+					[
+						'courseid' => $courseid
+					]
+				)
+			);
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {

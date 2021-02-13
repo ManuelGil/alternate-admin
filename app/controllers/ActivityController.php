@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.1 $ $Date: 02/11/2021 $
+ * @version $Revision: 0.2.2 $ $Date: 02/12/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -103,6 +103,7 @@ class ActivityController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
+	 * @param int $module - the module name
 	 * @param int $courseid - the course id
 	 */
 	public function getListModule($module = '', $courseid = 0)
@@ -135,7 +136,15 @@ class ActivityController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode($DB->get_records_sql($sql, ['module' => $module, 'courseid' => $courseid]));
+			return json_encode(
+				$DB->get_records_sql(
+					$sql,
+					[
+						'module' => $module,
+						'courseid' => $courseid
+					]
+				)
+			);
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {
@@ -176,7 +185,7 @@ class ActivityController extends BaseController
 				FROM				{modules}
 				WHERE				visible = 1;";
 
-// Execute the query.
+		// Execute the query.
 		$records = $DB->get_records_sql($sql);
 
 		// Parsing the records.
