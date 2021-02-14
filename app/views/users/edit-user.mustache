@@ -42,6 +42,15 @@
 				<input class="form-control" type="text" name="username" id="username">
 			</div>
 
+	        <div class="form-group">
+	            <label class="control-label" for="auth">Choose an authentication method </label>
+	            <select name="auth" id="auth" required>
+	                <option v-for="auth in plugins" :value="auth">
+	                    ${ auth }
+	                </option>
+	            </select>
+	        </div>
+
 			<div class="form-group">
 				<label class="control-label" for="suspended">Suspended account</label>
 				<br/>
@@ -78,7 +87,7 @@
 
 			<div class="form-group">
 				<label class="control-label" for="email">Email address</label>
-				<input class="form-control" type="text" name="email" id="email">
+				<input class="form-control" type="text" name="email" id="email" required>
 			</div>
 		</div>
 
@@ -125,6 +134,7 @@ input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:tr
         data: function () {
             return {
 				users: [],
+				plugins: [],
 				userid: ''
             }
         },
@@ -148,14 +158,23 @@ input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:tr
 								document.querySelector('#firstname').value = user.firstname
 								document.querySelector('#lastname').value = user.lastname
 								document.querySelector('#email').value = user.email
+								authentication.set(user.auth)
                             }
                         })
 				}
+            })
+
+            var authentication = new SlimSelect({
+                select: document.querySelector('#auth'),
+                placeholder: 'Select a method',
+                hideSelectedOption: true,
+                closeOnSelect: true,
             })
         },
         methods: {
             load: function () {
                 this.users = JSON.parse("{{{ users }}}")
+                this.plugins = JSON.parse("{{{ authplugins }}}")
             },
 			showPass: function () {
 				const input = document.querySelector('#password')

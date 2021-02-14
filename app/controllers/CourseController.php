@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.2 $ $Date: 02/12/2021 $
+ * @version $Revision: 0.2.3 $ $Date: 02/14/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -408,9 +408,9 @@ class CourseController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $courseid - the course id
+	 * @param null|string $courseid - the course id
 	 */
-	public function getListUsers($courseid = 0)
+	public function getListUsers($courseid = '')
 	{
 		// Imports Database.
 		global $DB;
@@ -449,7 +449,7 @@ class CourseController extends BaseController
 				$DB->get_records_sql(
 					$sql,
 					[
-						'courseid' => $courseid
+						'courseid' => (float) $courseid
 					]
 				)
 			);

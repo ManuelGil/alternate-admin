@@ -34,7 +34,7 @@ class CourseControllerTest extends TestCase
 	}
 
 	/**
-	 * This method checks the user list when the course id is empty.
+	 * This method checks the user list when the course id is invalid.
 	 *
 	 * @test
 	 */

@@ -7,16 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3] - 2021-02-14
+
+### Added
+
+-   New Field "Authentication" into "Edit User".
+-   New Test for "Activities" features.
+-   New Test for "Enrollment" features.
+
 ## [0.2.2] - 2021-02-12
 
 ### Added
 
+-   New "User Data" AJAX request route in "Courses".
 -   New "Edit User" sub-section to "Users".
 
 ## [0.2.1] - 2021-02-11
 
 ### Added
 
+-   New "List Module" AJAX request route in "Courses".
 -   New "List Activities" sub-section to "Activities".
 
 ### Changed
@@ -45,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   New "List Assignments" AJAX request route in "Courses".
 -   New "Switch Role" sub-section to "Enrollments".
 
 ## [0.1.0] - 2021-01-30
@@ -152,7 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.2...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.1.2...v0.2.0

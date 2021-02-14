@@ -43,4 +43,25 @@ class UserControllerTest extends TestCase
 	{
 		$this->assertEquals('[]', $this->userController->getListCourses('foo'));
 	}
+
+	/**
+	 * This method checks the user data when the user id is empty.
+	 *
+	 * @test
+	 */
+	public function testUserDataWithEmptyUserID()
+	{
+		$this->assertEquals('false', $this->userController->getUserData());
+	}
+
+
+	/**
+	 * This method checks the user data when the user id is invalid.
+	 *
+	 * @test
+	 */
+	public function testUserDataWithInvalidUserID()
+	{
+		$this->assertEquals('false', $this->userController->getUserData('foo'));
+	}
 }

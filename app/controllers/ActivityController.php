@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.2 $ $Date: 02/12/2021 $
+ * @version $Revision: 0.2.3 $ $Date: 02/14/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -103,64 +103,70 @@ class ActivityController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $module - the module name
-	 * @param int $courseid - the course id
+	 * @param string $module - the module name
+	 * @param null|string $courseid - the course id
 	 */
-	public function getListModule($module = '', $courseid = 0)
+	public function getListModule(string $module, $courseid = '')
 	{
 		// Imports Database.
 		global $DB;
 
-		$table = "{{$module}}";
+		if ($DB->record_exists('modules', ['name' => $module])) {
+			$table = "{{$module}}";
 
-		$sql = "SELECT		$table.id,
-								$table.name,
-								$table.intro
-					FROM 		$table
-					JOIN 		{course_modules}
-						ON		$table.id = {course_modules}.instance
-						AND		{course_modules}.visible = 1
-					JOIN		{modules}
-						ON		{course_modules}.module = {modules}.id
-						AND		{modules}.name = :module
-					WHERE		$table.course = :courseid";
+			$sql = "SELECT		$table.id,
+									$table.name,
+									$table.intro
+						FROM 		$table
+						JOIN 		{course_modules}
+							ON		$table.id = {course_modules}.instance
+							AND		{course_modules}.visible = 1
+						JOIN		{modules}
+							ON		{course_modules}.module = {modules}.id
+							AND		{modules}.name = :module
+						WHERE		$table.course = :courseid";
 
-		// Create a log channel.
-		$log = new Logger('App');
-		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+			// Create a log channel.
+			$log = new Logger('App');
+			$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
 
-		try {
-			header_remove();
-			http_response_code(200);
-			header('HTTP/1.1 200 OK');
-			header('Content-Type: application/json');
-
-			// Execute and parse the query.
-			return json_encode(
-				$DB->get_records_sql(
-					$sql,
-					[
-						'module' => $module,
-						'courseid' => $courseid
-					]
-				)
-			);
-		} catch (\Throwable $e) {
-			// When an error occurred.
-			if (DEBUG) {
+			try {
 				header_remove();
-				http_response_code(404);
-				header('HTTP/1.1 404 Not Found');
-				echo '<pre>' . $e->getTraceAsString() . '</pre>';
-				echo PHP_EOL;
-				echo $e->getMessage();
-			} else {
-				$log->error($e->getMessage(), $e->getTrace());
-				header_remove();
-				http_response_code(500);
-				header('HTTP/1.1 500 Internal Server Error');
+				http_response_code(200);
+				header('HTTP/1.1 200 OK');
+				header('Content-Type: application/json');
+
+				// Execute and parse the query.
+				return json_encode(
+					$DB->get_records_sql(
+						$sql,
+						[
+							'module' => $module,
+							'courseid' => (float) $courseid
+						]
+					)
+				);
+			} catch (\Throwable $e) {
+				// When an error occurred.
+				if (DEBUG) {
+					header_remove();
+					http_response_code(404);
+					header('HTTP/1.1 404 Not Found');
+					echo '<pre>' . $e->getTraceAsString() . '</pre>';
+					echo PHP_EOL;
+					echo $e->getMessage();
+				} else {
+					$log->error($e->getMessage(), $e->getTrace());
+					header_remove();
+					http_response_code(500);
+					header('HTTP/1.1 500 Internal Server Error');
+				}
+				exit;
 			}
-			exit;
+		} else {
+			header_remove();
+			http_response_code(404);
+			header('HTTP/1.1 404 Not Found');
 		}
 	}
 

@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.2 $ $Date: 02/12/2021 $
+ * @version $Revision: 0.2.3 $ $Date: 02/14/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -215,9 +215,9 @@ class UserController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $userid - the user id
+	 * @param null|string $userid - the user id
 	 */
-	public function getListCourses($userid = 0)
+	public function getListCourses($userid = '')
 	{
 		// Create a log channel.
 		$log = new Logger('App');
@@ -230,7 +230,7 @@ class UserController extends BaseController
 			header('Content-Type: application/json');
 
 			// Execute and parse the query.
-			return json_encode(enrol_get_users_courses($userid));
+			return json_encode(enrol_get_users_courses((float) $userid));
 		} catch (\Throwable $e) {
 			// When an error occurred.
 			if (DEBUG) {
@@ -384,9 +384,9 @@ class UserController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param int $userid - the user id
+	 * @param null|string $userid - the user id
 	 */
-	public function getUserData($userid = 0)
+	public function getUserData($userid = '')
 	{
 		// Imports Database.
 		global $DB;
@@ -406,7 +406,7 @@ class UserController extends BaseController
 				$DB->get_record(
 					'user',
 					[
-						'id' => $userid
+						'id' => (float) $userid
 					]
 				)
 			);
@@ -446,12 +446,20 @@ class UserController extends BaseController
 			)
 		);
 
+		$authplugins = addslashes(
+			json_encode(
+				get_enabled_auth_plugins(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
 		$params = array(
 			'COMPANY' => COMPANY,
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
-			'users' => $users
+			'users' => $users,
+			'authplugins' => $authplugins
 		);
 
 		// Render template.
@@ -474,6 +482,9 @@ class UserController extends BaseController
 
 			if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
 				$data->username = trim($_POST['username']);
+			}
+			if (isset($_POST['auth']) && !empty(trim($_POST['auth']))) {
+				$data->auth = trim($_POST['auth']);
 			}
 			if (isset($_POST['password']) && !empty(trim($_POST['password']))) {
 				$data->password = password_hash($_POST['password'], PASSWORD_DEFAULT, array());
@@ -541,12 +552,20 @@ class UserController extends BaseController
 			)
 		);
 
+		$authplugins = addslashes(
+			json_encode(
+				get_enabled_auth_plugins(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
 		$params = array(
 			'COMPANY' => COMPANY,
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
 			'users' => $users,
+			'authplugins' => $authplugins,
 			'message' => $message
 		);
 

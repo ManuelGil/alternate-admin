@@ -2,7 +2,6 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/ManuelGil/alternate-admin)]()
 [![GitHub Release Date](https://img.shields.io/github/release-date/ManuelGil/alternate-admin)]()
-[![Github All Releases](https://img.shields.io/github/downloads/ManuelGil/alternate-admin/total.svg)]()
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ![preview](https://raw.githubusercontent.com/ManuelGil/alternate-admin/main/docs/images/preview.png)
