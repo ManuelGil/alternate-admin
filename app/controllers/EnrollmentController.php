@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.3 $ $Date: 01/25/2021 $
+ * @version $Revision: 0.3.0 $ $Date: 01/25/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -433,9 +433,9 @@ class EnrollmentController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param null|string $courseid - the course id
+	 * @param string|null $courseid - the course id
 	 */
-	public function getListAssignments($courseid = '')
+	public function getListAssignments(?string $courseid = '')
 	{
 		// Imports Database.
 		global $DB;

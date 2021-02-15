@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.3 $ $Date: 02/14/2021 $
+ * @version $Revision: 0.3.0 $ $Date: 02/15/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -215,9 +215,9 @@ class UserController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param null|string $userid - the user id
+	 * @param string|null $userid - the user id
 	 */
-	public function getListCourses($userid = '')
+	public function getListCourses(?string $userid = '')
 	{
 		// Create a log channel.
 		$log = new Logger('App');
@@ -384,9 +384,9 @@ class UserController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param null|string $userid - the user id
+	 * @param string|null $userid - the user id
 	 */
-	public function getUserData($userid = '')
+	public function getUserData(?string $userid = '')
 	{
 		// Imports Database.
 		global $DB;

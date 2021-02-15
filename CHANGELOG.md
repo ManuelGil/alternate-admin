@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-02-15
+
+### Added
+
+-   New "Count Role" AJAX request route in "Courses".
+-   New "Non Role Course" AJAX request route in "Courses".
+
+### Changed
+
+-   Merge routes "Count Teachers", "Count Non-editing Teachers" and "Count Students" on "Count With Role".
+-   Merge routes "Course Without Teachers", "Course Without Non-editing Teachers" and "Course Without Students" on "Course Without Role".
+
 ## [0.2.3] - 2021-02-14
 
 ### Added
@@ -163,7 +175,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.3...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.0...v0.2.1

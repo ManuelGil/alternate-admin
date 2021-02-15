@@ -24,6 +24,26 @@ class CourseControllerTest extends TestCase
 	}
 
 	/**
+	 * This method checks the count role by course when the role id is empty.
+	 *
+	 * @test
+	 */
+	public function testCountRoleWithEmptyRoleID()
+	{
+		$this->assertEquals('[]', $this->courseController->getCountRole());
+	}
+
+	/**
+	 * This method checks the count role by course when the role id is invalid.
+	 *
+	 * @test
+	 */
+	public function testCountRoleWithInvalidRoleID()
+	{
+		$this->assertEquals('[]', $this->courseController->getCountRole('foo'));
+	}
+
+	/**
 	 * This method checks the user list when the course id is empty.
 	 *
 	 * @test

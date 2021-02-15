@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.2.3 $ $Date: 02/14/2021 $
+ * @version $Revision: 0.3.0 $ $Date: 02/15/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -125,18 +125,21 @@ class CourseController extends BaseController
 	}
 
 	/**
-	 * This method load the 'count-teachers' route. <br/>
-	 * <b>post: </b>access to GET method.
+	 * This method load the 'count-role' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 *
+	 * @param string|null $roleid - the role id
 	 */
-	public function getCountTeachers()
+	public function getCountRole(?string $roleid = '')
 	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
+		// Imports Database.
+		global $DB;
 
-		// SQL Query for count editingteachers.
+		// SQL Query for count role.
 		$sql = "SELECT		{course}.id,
 							{course}.fullname AS course,
-							COUNT({course}.id) AS teachers
+							COUNT({course}.id) AS users
 				FROM		{role_assignments}
 				JOIN		{context}
 					ON		{role_assignments}.contextid = {context}.id
@@ -145,17 +148,61 @@ class CourseController extends BaseController
 					ON		{user}.id = {role_assignments}.userid
 				JOIN		{course}
 					ON		{context}.instanceid = {course}.id
-				WHERE		{role_assignments}.roleid = 3
+				WHERE		{role_assignments}.roleid = :roleid
 				GROUP BY	{course}.id
-				ORDER BY	teachers ASC;";
+				ORDER BY	users ASC;";
 
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
+
+			// Execute and parse the query.
+			return json_encode(
+				$DB->get_records_sql(
+					$sql,
+					[
+						'roleid' => (float) $roleid
+					]
+				)
+			);
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
+	}
+
+	/**
+	 * This method load the 'count-with-role' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getCountWithRole()
+	{
+		// Imports Config and Current User.
+		global $CFG, $USER;
 
 		// Parsing the records.
-		$items = addslashes(
+		$roles = addslashes(
 			json_encode(
-				$records,
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
 				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
 			)
 		);
@@ -165,119 +212,26 @@ class CourseController extends BaseController
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
-			'items' => $items
+			'roles' => $roles
 		);
 
 		// Render template.
-		return $this->render('/courses/count-teachers.mustache', $params);
+		return $this->render('/courses/count-with-role.mustache', $params);
 	}
 
 	/**
-	 * This method load the 'count-non-editing-teachers' route. <br/>
-	 * <b>post: </b>access to GET method.
+	 * This method load the 'non-role-course' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 *
+	 * @param string|null $roleid - the role id
 	 */
-	public function getCountNonEditingTeachers()
+	public function getNonRoleCourse(?string $roleid = '')
 	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
+		// Imports Database.
+		global $DB;
 
-		// SQL Query for count teachers.
-		$sql = "SELECT		{course}.id,
-							{course}.fullname AS course,
-							COUNT({course}.id) AS teachers
-				FROM		{role_assignments}
-				JOIN		{context}
-					ON		{role_assignments}.contextid = {context}.id
-					AND		{context}.contextlevel = 50
-				JOIN		{user}
-					ON		{user}.id = {role_assignments}.userid
-				JOIN		{course}
-					ON		{context}.instanceid = {course}.id
-				WHERE		{role_assignments}.roleid = 4
-				GROUP BY	{course}.id
-				ORDER BY	teachers ASC;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
-
-		// Parsing the records.
-		$items = addslashes(
-			json_encode(
-				$records,
-				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
-			)
-		);
-
-		$params = array(
-			'COMPANY' => COMPANY,
-			'BASE_URL' => BASE_URL,
-			'wwwroot' => $CFG->wwwroot,
-			'USER' => $USER,
-			'items' => $items
-		);
-
-		// Render template.
-		return $this->render('/courses/count-non-editing-teachers.mustache', $params);
-	}
-
-	/**
-	 * This method load the 'count-students' route. <br/>
-	 * <b>post: </b>access to GET method.
-	 */
-	public function getCountStudents()
-	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
-
-		// SQL Query for count students.
-		$sql = "SELECT		{course}.id,
-							{course}.fullname AS course,
-							COUNT({course}.id) AS students
-				FROM		{role_assignments}
-				JOIN		{context}
-					ON		{role_assignments}.contextid = {context}.id
-					AND		{context}.contextlevel = 50
-				JOIN		{user}
-					ON		{user}.id = {role_assignments}.userid
-				JOIN		{course}
-					ON		{context}.instanceid = {course}.id
-				WHERE		{role_assignments}.roleid = 5
-				GROUP BY	{course}.id
-				ORDER BY	students ASC;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
-
-		// Parsing the records.
-		$items = addslashes(
-			json_encode(
-				$records,
-				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
-			)
-		);
-
-		$params = array(
-			'COMPANY' => COMPANY,
-			'BASE_URL' => BASE_URL,
-			'wwwroot' => $CFG->wwwroot,
-			'USER' => $USER,
-			'items' => $items
-		);
-
-		// Render template.
-		return $this->render('/courses/count-students.mustache', $params);
-	}
-
-	/**
-	 * This method load the 'course-without-teachers' route. <br/>
-	 * <b>post: </b>access to GET method.
-	 */
-	public function getCourseWithoutTeachers()
-	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
-
-		// SQL Query for count editingteachers.
+		// SQL Query for count role.
 		$sql = "SELECT		{course}.id,
 				    		{course}.fullname
 				FROM 		{course}
@@ -286,62 +240,61 @@ class CourseController extends BaseController
 				    AND		{context}.contextlevel = 50
 				LEFT JOIN	{role_assignments}
 					ON		{context}.id = {role_assignments}.contextid
-				    AND 	{role_assignments}.roleid = 3
+				    AND 	{role_assignments}.roleid = :roleid
 				GROUP BY 	{course}.id
 				HAVING 		COUNT({role_assignments}.id) = 0;";
 
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
 
-		// Parsing the records.
-		$items = addslashes(
-			json_encode(
-				$records,
-				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
-			)
-		);
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
 
-		$params = array(
-			'COMPANY' => COMPANY,
-			'BASE_URL' => BASE_URL,
-			'wwwroot' => $CFG->wwwroot,
-			'USER' => $USER,
-			'items' => $items
-		);
-
-		// Render template.
-		return $this->render('/courses/course-without-teachers.mustache', $params);
+			// Execute and parse the query.
+			return json_encode(
+				$DB->get_records_sql(
+					$sql,
+					[
+						'roleid' => (float) $roleid
+					]
+				)
+			);
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
 	}
 
 	/**
-	 * This method load the 'course-without-non-editing-teachers' route. <br/>
+	 * This method load the 'course-without-role' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getCourseWithoutNonEditingTeachers()
+	public function getCourseWithoutRole()
 	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
-
-		// SQL Query for count teachers.
-		$sql = "SELECT		{course}.id,
-				    		{course}.fullname
-				FROM 		{course}
-				LEFT JOIN 	{context}
-					ON 		{course}.id = {context}.instanceid
-				    AND		{context}.contextlevel = 50
-				LEFT JOIN	{role_assignments}
-					ON		{context}.id = {role_assignments}.contextid
-				    AND 	{role_assignments}.roleid = 4
-				GROUP BY 	{course}.id
-				HAVING 		COUNT({role_assignments}.id) = 0;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
+		// Imports Config and Current User.
+		global $CFG, $USER;
 
 		// Parsing the records.
-		$items = addslashes(
+		$roles = addslashes(
 			json_encode(
-				$records,
+				role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL, true),
 				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
 			)
 		);
@@ -351,56 +304,11 @@ class CourseController extends BaseController
 			'BASE_URL' => BASE_URL,
 			'wwwroot' => $CFG->wwwroot,
 			'USER' => $USER,
-			'items' => $items
+			'roles' => $roles
 		);
 
 		// Render template.
-		return $this->render('/courses/course-without-non-editing-teachers.mustache', $params);
-	}
-
-	/**
-	 * This method load the 'course-without-students' route. <br/>
-	 * <b>post: </b>access to GET method.
-	 */
-	public function getCourseWithoutStudents()
-	{
-		// Imports Config, Database and Current User.
-		global $CFG, $DB, $USER;
-
-		// SQL Query for count students.
-		$sql = "SELECT		{course}.id,
-				    		{course}.fullname
-				FROM 		{course}
-				LEFT JOIN 	{context}
-					ON 		{course}.id = {context}.instanceid
-				    AND		{context}.contextlevel = 50
-				LEFT JOIN	{role_assignments}
-					ON		{context}.id = {role_assignments}.contextid
-				    AND 	{role_assignments}.roleid = 5
-				GROUP BY 	{course}.id
-				HAVING 		COUNT({role_assignments}.id) = 0;";
-
-		// Execute the query.
-		$records = $DB->get_records_sql($sql);
-
-		// Parsing the records.
-		$items = addslashes(
-			json_encode(
-				$records,
-				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
-			)
-		);
-
-		$params = array(
-			'COMPANY' => COMPANY,
-			'BASE_URL' => BASE_URL,
-			'wwwroot' => $CFG->wwwroot,
-			'USER' => $USER,
-			'items' => $items
-		);
-
-		// Render template.
-		return $this->render('/courses/course-without-students.mustache', $params);
+		return $this->render('/courses/course-without-role.mustache', $params);
 	}
 
 	/**
@@ -408,9 +316,9 @@ class CourseController extends BaseController
 	 * <b>post: </b>access to GET method. <br/>
 	 * <b>post: </b>AJAX request.
 	 *
-	 * @param null|string $courseid - the course id
+	 * @param string|null $courseid - the course id
 	 */
-	public function getListUsers($courseid = '')
+	public function getListUsers(?string $courseid = '')
 	{
 		// Imports Database.
 		global $DB;
