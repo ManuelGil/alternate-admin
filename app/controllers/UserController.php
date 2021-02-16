@@ -27,7 +27,7 @@
  *
  * Problem: Add more function to tradiccional admin.
  * @author $Author: Manuel Gil. $
- * @version $Revision: 0.3.0 $ $Date: 02/15/2021 $
+ * @version $Revision: 0.3.1 $ $Date: 02/16/2021 $
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -280,6 +280,253 @@ class UserController extends BaseController
 	}
 
 	/**
+	 * This method load the 'user-data' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>AJAX request.
+	 *
+	 * @param string|null $userid - the user id
+	 */
+	public function getUserData(?string $userid = '')
+	{
+		// Imports Database.
+		global $DB;
+
+		// Create a log channel.
+		$log = new Logger('App');
+		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+
+		try {
+			header_remove();
+			http_response_code(200);
+			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
+
+			// Execute and parse the query.
+			return json_encode(
+				$DB->get_record(
+					'user',
+					[
+						'id' => (float) $userid
+					]
+				)
+			);
+		} catch (\Throwable $e) {
+			// When an error occurred.
+			if (DEBUG) {
+				header_remove();
+				http_response_code(404);
+				header('HTTP/1.1 404 Not Found');
+				echo '<pre>' . $e->getTraceAsString() . '</pre>';
+				echo PHP_EOL;
+				echo $e->getMessage();
+			} else {
+				$log->error($e->getMessage(), $e->getTrace());
+				header_remove();
+				http_response_code(500);
+				header('HTTP/1.1 500 Internal Server Error');
+			}
+			exit;
+		}
+	}
+
+	/**
+	 * This method load the 'edit-user' route. <br/>
+	 * <b>post: </b>access to GET method.
+	 */
+	public function getEditUser()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $USER;
+
+		// Parsing the users.
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$authplugins = addslashes(
+			json_encode(
+				get_enabled_auth_plugins(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$countries = addslashes(
+			json_encode(
+				get_string_manager()->get_list_of_countries(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$choices = \core_date::get_list_of_timezones();
+		$choices['99'] = get_string('serverlocaltime');
+
+		$timezones = addslashes(
+			json_encode(
+				$choices,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'users' => $users,
+			'authplugins' => $authplugins,
+			'countries' => $countries,
+			'timezones' => $timezones
+		);
+
+		// Render template.
+		return $this->render('/users/edit-user.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'edit-user' route. <br/>
+	 * <b>post: </b>access to POST method.
+	 */
+	public function postEditUser()
+	{
+		// Imports Config, Database and Current User.
+		global $CFG, $DB, $USER;
+
+		if (isset($_POST['userid']) && !empty(trim($_POST['userid']))) {
+			$data = new \stdClass();
+
+			$data->id = $_POST['userid'];
+
+			if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
+				$data->username = trim($_POST['username']);
+			}
+			if (isset($_POST['auth']) && !empty(trim($_POST['auth']))) {
+				$data->auth = trim($_POST['auth']);
+			}
+			if (isset($_POST['password']) && !empty(trim($_POST['password']))) {
+				$data->password = password_hash($_POST['password'], PASSWORD_DEFAULT, array());
+			}
+			if (isset($_POST['firstname']) && !empty(trim($_POST['firstname']))) {
+				$data->firstname = trim($_POST['firstname']);
+			}
+			if (isset($_POST['lastname']) && !empty(trim($_POST['lastname']))) {
+				$data->lastname = trim($_POST['lastname']);
+			}
+			if (isset($_POST['email']) && !empty(trim($_POST['email']))) {
+				$data->email = trim($_POST['email']);
+			}
+			if (isset($_POST['maildisplay']) && !empty(trim($_POST['maildisplay']))) {
+				$data->maildisplay = trim($_POST['maildisplay']);
+			}
+			if (isset($_POST['moodlenetprofile']) && !empty(trim($_POST['moodlenetprofile']))) {
+				$data->moodlenetprofile = trim($_POST['moodlenetprofile']);
+			}
+			if (isset($_POST['city']) && !empty(trim($_POST['city']))) {
+				$data->city = trim($_POST['city']);
+			}
+			if (isset($_POST['country']) && !empty(trim($_POST['country']))) {
+				$data->country = trim($_POST['country']);
+			}
+			if (isset($_POST['timezone']) && !empty(trim($_POST['timezone']))) {
+				$data->timezone = trim($_POST['timezone']);
+			}
+			if (isset($_POST['suspended'])) {
+				$data->suspended = 1;
+			} else {
+				$data->suspended = 0;
+			}
+
+			$data->timemodified = time();
+
+			try {
+				$DB->update_record('user', $data);
+
+				$message = "<div class=\"alert alert-success\" role=\"alert\">
+        					      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        					        <span aria-hidden=\"true\">&times;</span>
+        					      </button>
+        					      <strong>Well done!</strong> the user were updated.
+        					</div>";
+			} catch (\Throwable $e) {
+				$message = "<div class=\"alert alert-danger\" role=\"alert\">
+        					      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        					        <span aria-hidden=\"true\">&times;</span>
+        					      </button>
+        					      <strong>Heads up!</strong> the user could not be updated.
+        					</div>";
+			}
+
+			if (isset($_POST['forcepasschange'])) {
+				$data = new \stdClass();
+
+				$data->userid = $_POST['userid'];
+				$data->name = 'auth_forcepasswordchange';
+				$data->value = 1;
+
+				try {
+					$transaction = $DB->start_delegated_transaction();
+					$DB->insert_record('user_preferences', $data);
+					$transaction->allow_commit();
+				} catch (\Throwable $e) {
+					// Make sure transaction is valid.
+					if (!empty($transaction) && !$transaction->is_disposed()) {
+						$transaction->rollback($e);
+					}
+				}
+			}
+		}
+
+		// Parsing the users.
+		$users = addslashes(
+			json_encode(
+				get_users_listing(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$authplugins = addslashes(
+			json_encode(
+				get_enabled_auth_plugins(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$countries = addslashes(
+			json_encode(
+				get_string_manager()->get_list_of_countries(),
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$choices = \core_date::get_list_of_timezones();
+		$choices['99'] = get_string('serverlocaltime');
+
+		$timezones = addslashes(
+			json_encode(
+				$choices,
+				JSON_HEX_AMP | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+			)
+		);
+
+		$params = array(
+			'COMPANY' => COMPANY,
+			'BASE_URL' => BASE_URL,
+			'wwwroot' => $CFG->wwwroot,
+			'USER' => $USER,
+			'users' => $users,
+			'authplugins' => $authplugins,
+			'countries' => $countries,
+			'timezones' => $timezones,
+			'message' => $message
+		);
+
+		// Render template.
+		return $this->render('/users/edit-user.mustache', $params);
+	}
+
+	/**
 	 * This method load the 'suspend-user' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
@@ -380,62 +627,12 @@ class UserController extends BaseController
 	}
 
 	/**
-	 * This method load the 'user-data' route. <br/>
-	 * <b>post: </b>access to GET method. <br/>
-	 * <b>post: </b>AJAX request.
-	 *
-	 * @param string|null $userid - the user id
-	 */
-	public function getUserData(?string $userid = '')
-	{
-		// Imports Database.
-		global $DB;
-
-		// Create a log channel.
-		$log = new Logger('App');
-		$log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
-
-		try {
-			header_remove();
-			http_response_code(200);
-			header('HTTP/1.1 200 OK');
-			header('Content-Type: application/json');
-
-			// Execute and parse the query.
-			return json_encode(
-				$DB->get_record(
-					'user',
-					[
-						'id' => (float) $userid
-					]
-				)
-			);
-		} catch (\Throwable $e) {
-			// When an error occurred.
-			if (DEBUG) {
-				header_remove();
-				http_response_code(404);
-				header('HTTP/1.1 404 Not Found');
-				echo '<pre>' . $e->getTraceAsString() . '</pre>';
-				echo PHP_EOL;
-				echo $e->getMessage();
-			} else {
-				$log->error($e->getMessage(), $e->getTrace());
-				header_remove();
-				http_response_code(500);
-				header('HTTP/1.1 500 Internal Server Error');
-			}
-			exit;
-		}
-	}
-
-	/**
-	 * This method load the 'edit-user' route. <br/>
+	 * This method load the 'switch-authentication' route. <br/>
 	 * <b>post: </b>access to GET method.
 	 */
-	public function getEditUser()
+	public function getSwitchAuthentication()
 	{
-		// Imports Config, Database and Current User.
+		// Imports Config and Current User.
 		global $CFG, $USER;
 
 		// Parsing the users.
@@ -463,85 +660,57 @@ class UserController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/users/edit-user.mustache', $params);
+		return $this->render('/users/switch-authentication.mustache', $params);
 	}
 
 	/**
-	 * This method load the 'edit-user' route. <br/>
+	 * This method load the 'switch-authentication' route. <br/>
 	 * <b>post: </b>access to POST method.
 	 */
-	public function postEditUser()
+	public function postSwitchAuthentication()
 	{
 		// Imports Config, Database and Current User.
 		global $CFG, $DB, $USER;
 
-		if (isset($_POST['userid']) && !empty(trim($_POST['userid']))) {
-			$data = new \stdClass();
+		// Define the count variables.
+		$successes = 0;
+		$failures = 0;
 
-			$data->id = $_POST['userid'];
-
-			if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
-				$data->username = trim($_POST['username']);
-			}
-			if (isset($_POST['auth']) && !empty(trim($_POST['auth']))) {
-				$data->auth = trim($_POST['auth']);
-			}
-			if (isset($_POST['password']) && !empty(trim($_POST['password']))) {
-				$data->password = password_hash($_POST['password'], PASSWORD_DEFAULT, array());
-			}
-			if (isset($_POST['firstname']) && !empty(trim($_POST['firstname']))) {
-				$data->firstname = trim($_POST['firstname']);
-			}
-			if (isset($_POST['lastname']) && !empty(trim($_POST['lastname']))) {
-				$data->lastname = trim($_POST['lastname']);
-			}
-			if (isset($_POST['email']) && !empty(trim($_POST['email']))) {
-				$data->email = trim($_POST['email']);
-			}
-			if (isset($_POST['suspended'])) {
-				$data->suspended = 1;
-			} else {
-				$data->suspended = 0;
-			}
-
-			$data->timemodified = time();
-
-			try {
-				$DB->update_record('user', $data);
-
-				$message = "<div class=\"alert alert-success\" role=\"alert\">
-        					      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
-        					        <span aria-hidden=\"true\">&times;</span>
-        					      </button>
-        					      <strong>Well done!</strong> the user were updated.
-        					</div>";
-			} catch (\Throwable $e) {
-				$message = "<div class=\"alert alert-danger\" role=\"alert\">
-        					      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
-        					        <span aria-hidden=\"true\">&times;</span>
-        					      </button>
-        					      <strong>Heads up!</strong> the user could not be updated.
-        					</div>";
-			}
-
-			if (isset($_POST['forcepasschange'])) {
-				$data = new \stdClass();
-
-				$data->userid = $_POST['userid'];
-				$data->name = 'auth_forcepasswordchange';
-				$data->value = 1;
-
+		if (isset($_POST['users'])) {
+			// Loop through the users.
+			foreach ($_POST['users'] as $userid) {
 				try {
-					$transaction = $DB->start_delegated_transaction();
-					$DB->insert_record('user_preferences', $data);
-					$transaction->allow_commit();
+					$DB->set_field('user', 'auth', $_POST['auth'], ['id' => $userid]);
+
+					// Add one user to the count.
+					$successes++;
 				} catch (\Throwable $e) {
-					// Make sure transaction is valid.
-					if (!empty($transaction) && !$transaction->is_disposed()) {
-						$transaction->rollback($e);
-					}
+					// Add one fault to the count.
+					$failures++;
 				}
 			}
+		}
+
+		$message = "";
+
+		// Add a message with the number of hits.
+		if ($successes > 0) {
+			$message .= "<div class=\"alert alert-success\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Well done!</strong> {$successes} users were updated.
+        				</div>";
+		}
+
+		// Add a message with the number of failures.
+		if ($failures > 0) {
+			$message .= "<div class=\"alert alert-danger\" role=\"alert\">
+        				      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+        				        <span aria-hidden=\"true\">&times;</span>
+        				      </button>
+        				      <strong>Heads up!</strong> {$failures} users could not be updated.
+        				</div>";
 		}
 
 		// Parsing the users.
@@ -570,6 +739,6 @@ class UserController extends BaseController
 		);
 
 		// Render template.
-		return $this->render('/users/edit-user.mustache', $params);
+		return $this->render('/users/switch-authentication.mustache', $params);
 	}
 }

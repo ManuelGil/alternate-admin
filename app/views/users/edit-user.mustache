@@ -43,7 +43,7 @@
 			</div>
 
 	        <div class="form-group">
-	            <label class="control-label" for="auth">Choose an authentication method </label>
+	            <label class="control-label" for="auth">Choose an authentication method</label>
 	            <select name="auth" id="auth" required>
 	                <option v-for="auth in plugins" :value="auth">
 	                    ${ auth }
@@ -89,6 +89,45 @@
 				<label class="control-label" for="email">Email address</label>
 				<input class="form-control" type="text" name="email" id="email" required>
 			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="maildisplay">Email display</label>
+				<select name="maildisplay" id="maildisplay">
+					<option value="0">Hide my email address from non-privileged users</option>
+					<option value="1">Allow everyone to see my email address</option>
+					<option value="2">Allow only other course members to see my email address</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="moodlenetprofile">MoodleNet profile</label>
+				<input class="form-control" type="text" name="moodlenetprofile" id="moodlenetprofile">
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="city">City/town</label>
+				<input class="form-control" type="text" name="city" id="city">
+			</div>
+
+	        <div class="form-group">
+	            <label class="control-label" for="country">Select a country</label>
+	            <select name="country" id="country" required>
+					<option data-placeholder="true"></option>
+	                <option v-for="(country, index) in countries" :value="index">
+	                    ${ country }
+	                </option>
+	            </select>
+	        </div>
+
+	        <div class="form-group">
+	            <label class="control-label" for="timezone">Timezone</label>
+	            <select name="timezone" id="timezone" required>
+					<option data-placeholder="true"></option>
+	                <option v-for="(timezone, index) in timezones" :value="index">
+	                    ${ timezone }
+	                </option>
+	            </select>
+	        </div>
 		</div>
 
         <div id="spinner" class="form-group text-center" style="display: none;">
@@ -135,6 +174,8 @@ input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:tr
             return {
 				users: [],
 				plugins: [],
+				countries: [],
+				timezones: [],
 				userid: ''
             }
         },
@@ -158,7 +199,12 @@ input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:tr
 								document.querySelector('#firstname').value = user.firstname
 								document.querySelector('#lastname').value = user.lastname
 								document.querySelector('#email').value = user.email
+								document.querySelector('#moodlenetprofile').value = user.moodlenetprofile
+								document.querySelector('#city').value = user.city
 								authentication.set(user.auth)
+								maildisplay.set(user.maildisplay)
+								country.set(user.country)
+								timezone.set(user.timezone)
                             }
                         })
 				}
@@ -170,11 +216,34 @@ input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:tr
                 hideSelectedOption: true,
                 closeOnSelect: true,
             })
+
+            var maildisplay = new SlimSelect({
+                select: document.querySelector('#maildisplay'),
+                placeholder: 'Select an option',
+                hideSelectedOption: true,
+                closeOnSelect: true,
+            })
+
+            var country = new SlimSelect({
+                select: document.querySelector('#country'),
+                placeholder: 'Select a country',
+                hideSelectedOption: true,
+                closeOnSelect: true,
+            })
+
+            var timezone = new SlimSelect({
+                select: document.querySelector('#timezone'),
+                placeholder: 'Select a timezone',
+                hideSelectedOption: true,
+                closeOnSelect: true,
+            })
         },
         methods: {
             load: function () {
                 this.users = JSON.parse("{{{ users }}}")
                 this.plugins = JSON.parse("{{{ authplugins }}}")
+                this.countries = JSON.parse("{{{ countries }}}")
+                this.timezones = JSON.parse("{{{ timezones }}}")
             },
 			showPass: function () {
 				const input = document.querySelector('#password')
