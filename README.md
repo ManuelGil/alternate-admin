@@ -97,6 +97,14 @@ $ sudo chown www-data: logs/
 
 -   Reset apache2 service.
 
+## Built With
+
+-   PHP 7.4.3 ([XAMPP](https://www.apachefriends.org/download.html))
+-   COMPOSER 2.0.9 ([COMPOSER](https://getcomposer.org/download/))
+-   Moodle 3.10.1 ([Moodle](https://download.moodle.org/))
+-   Visual Studio Code 1.53.0 ([VSCode](https://code.visualstudio.com/download))
+-   Moodle Snippets for VSCode 1.1.0 ([Moodle Pack](https://marketplace.visualstudio.com/items?itemName=imgildev.vscode-moodle-snippets))
+
 ## Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md)

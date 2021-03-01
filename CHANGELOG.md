@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-02-28
+
+### Added
+
+-   Implements "phpoffice/phpspreadsheet" package.
+-   New "Download Users" route for Download csv files.
+-   Add comment in the header of all files.
+
 ## [0.3.1] - 2021-02-16
 
 ### Added
@@ -182,7 +190,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Initial major release.._
 
-[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v0.3.1...HEAD
+[unreleased]: https://github.com/ManuelGil/alternate-admin/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.3.1...v1.0.0
 [0.3.1]: https://github.com/ManuelGil/alternate-admin/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/ManuelGil/alternate-admin/compare/v0.2.2...v0.2.3

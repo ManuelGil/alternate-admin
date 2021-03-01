@@ -1,33 +1,29 @@
 <?php
-//    This file is part of Alternate Admin for Moodle
-//    Alternate Admin Free GNU Application
-//    Copyright (C) 2021 Manuel Gil.
+// This file is part of Moodle - http://moodle.org/
 //
-//    This program is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-//    GNU General Public License for more details.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License
-//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * $Id$
  * <p>Title: Alternate Admin for Moodle.</p>
  * <p>Description: This wrapper for Moodle adds a new interface to
  * 					streamline your administrative tasks.</p>
- * <p>Copyright: <a href="http://www.gnu.org/copyleft/gpl.html">GNU GPL v3 or later</a>.</p>
- * <p>Company: <a href="https://imgil.dev/">Manuel Gil</a></p>
  *
- * Problem: Add more function to tradiccional admin.
- * @author $Author: Manuel Gil. $
- * @version $Revision: 0.3.1 $ $Date: 02/16/2021 $
+ * @package		wrapper
+ * @author 		$Author: 2021 Manuel Gil. <https://imgil.dev/> $
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -35,6 +31,8 @@ namespace App\Controllers;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 
 /**
  * UserController class
@@ -50,7 +48,7 @@ class UserController extends BaseController
 	 */
 	public function anyIndex()
 	{
-		header('location: ' . BASE_URL);
+		redirect(BASE_URL);
 	}
 
 	/**
@@ -740,5 +738,146 @@ class UserController extends BaseController
 
 		// Render template.
 		return $this->render('/users/switch-authentication.mustache', $params);
+	}
+
+	/**
+	 * This method load the 'download-users' route. <br/>
+	 * <b>post: </b>access to GET method. <br/>
+	 * <b>post: </b>Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.
+	 */
+	public function getDownloadUsers()
+	{
+		global $DB;
+
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+
+		$users = $DB->get_records('user');
+
+		$sheet->setCellValue('A1', 'id');
+		$sheet->setCellValue('B1', 'auth');
+		$sheet->setCellValue('C1', 'confirmed');
+		$sheet->setCellValue('D1', 'policyagreed');
+		$sheet->setCellValue('E1', 'deleted');
+		$sheet->setCellValue('F1', 'suspended');
+		$sheet->setCellValue('G1', 'mnethostid');
+		$sheet->setCellValue('H1', 'username');
+		$sheet->setCellValue('I1', 'password');
+		$sheet->setCellValue('J1', 'idnumber');
+		$sheet->setCellValue('K1', 'firstname');
+		$sheet->setCellValue('L1', 'lastname');
+		$sheet->setCellValue('M1', 'email');
+		$sheet->setCellValue('N1', 'emailstop');
+		$sheet->setCellValue('O1', 'icq');
+		$sheet->setCellValue('P1', 'skype');
+		$sheet->setCellValue('Q1', 'yahoo');
+		$sheet->setCellValue('R1', 'aim');
+		$sheet->setCellValue('S1', 'msn');
+		$sheet->setCellValue('T1', 'phone1');
+		$sheet->setCellValue('U1', 'phone2');
+		$sheet->setCellValue('V1', 'institution');
+		$sheet->setCellValue('W1', 'department');
+		$sheet->setCellValue('X1', 'address');
+		$sheet->setCellValue('Y1', 'city');
+		$sheet->setCellValue('Z1', 'country');
+		$sheet->setCellValue('AA1', 'lang');
+		$sheet->setCellValue('AB1', 'calendartype');
+		$sheet->setCellValue('AC1', 'theme');
+		$sheet->setCellValue('AD1', 'timezone');
+		$sheet->setCellValue('AE1', 'firstaccess');
+		$sheet->setCellValue('AF1', 'lastaccess');
+		$sheet->setCellValue('AG1', 'lastlogin');
+		$sheet->setCellValue('AH1', 'currentlogin');
+		$sheet->setCellValue('AI1', 'lastip');
+		$sheet->setCellValue('AJ1', 'secret');
+		$sheet->setCellValue('AK1', 'picture');
+		$sheet->setCellValue('AL1', 'url');
+		$sheet->setCellValue('AM1', 'description');
+		$sheet->setCellValue('AN1', 'descriptionformat');
+		$sheet->setCellValue('AO1', 'mailformat');
+		$sheet->setCellValue('AP1', 'maildigest');
+		$sheet->setCellValue('AQ1', 'maildisplay');
+		$sheet->setCellValue('AR1', 'autosubscribe');
+		$sheet->setCellValue('AS1', 'trackforums');
+		$sheet->setCellValue('AT1', 'timecreated');
+		$sheet->setCellValue('AU1', 'timemodified');
+		$sheet->setCellValue('AV1', 'trustbitmask');
+		$sheet->setCellValue('AW1', 'imagealt');
+		$sheet->setCellValue('AX1', 'lastnamephonetic');
+		$sheet->setCellValue('AY1', 'firstnamephonetic');
+		$sheet->setCellValue('AZ1', 'middlename');
+		$sheet->setCellValue('BA1', 'alternatename');
+
+		$index = 2;
+
+		foreach ($users as $user) {
+			$sheet->setCellValue('A' . $index, $user->id);
+			$sheet->setCellValue('B' . $index, $user->auth);
+			$sheet->setCellValue('C' . $index, $user->confirmed);
+			$sheet->setCellValue('D' . $index, $user->policyagreed);
+			$sheet->setCellValue('E' . $index, $user->deleted);
+			$sheet->setCellValue('F' . $index, $user->suspended);
+			$sheet->setCellValue('G' . $index, $user->mnethostid);
+			$sheet->setCellValue('H' . $index, $user->username);
+			$sheet->setCellValue('I' . $index, $user->password);
+			$sheet->setCellValue('J' . $index, $user->idnumber);
+			$sheet->setCellValue('K' . $index, $user->firstname);
+			$sheet->setCellValue('L' . $index, $user->lastname);
+			$sheet->setCellValue('M' . $index, $user->email);
+			$sheet->setCellValue('N' . $index, $user->emailstop);
+			$sheet->setCellValue('O' . $index, $user->icq);
+			$sheet->setCellValue('P' . $index, $user->skype);
+			$sheet->setCellValue('Q' . $index, $user->yahoo);
+			$sheet->setCellValue('R' . $index, $user->aim);
+			$sheet->setCellValue('S' . $index, $user->msn);
+			$sheet->setCellValue('T' . $index, $user->phone1);
+			$sheet->setCellValue('U' . $index, $user->phone2);
+			$sheet->setCellValue('V' . $index, $user->institution);
+			$sheet->setCellValue('W' . $index, $user->department);
+			$sheet->setCellValue('X' . $index, $user->address);
+			$sheet->setCellValue('Y' . $index, $user->city);
+			$sheet->setCellValue('Z' . $index, $user->country);
+			$sheet->setCellValue('AA' . $index, $user->lang);
+			$sheet->setCellValue('AB' . $index, $user->calendartype);
+			$sheet->setCellValue('AC' . $index, $user->theme);
+			$sheet->setCellValue('AD' . $index, $user->timezone);
+			$sheet->setCellValue('AE' . $index, $user->firstaccess);
+			$sheet->setCellValue('AF' . $index, $user->lastaccess);
+			$sheet->setCellValue('AG' . $index, $user->lastlogin);
+			$sheet->setCellValue('AH' . $index, $user->currentlogin);
+			$sheet->setCellValue('AI' . $index, $user->lastip);
+			$sheet->setCellValue('AJ' . $index, $user->secret);
+			$sheet->setCellValue('AK' . $index, $user->picture);
+			$sheet->setCellValue('AL' . $index, $user->url);
+			$sheet->setCellValue('AM' . $index, $user->description);
+			$sheet->setCellValue('AN' . $index, $user->descriptionformat);
+			$sheet->setCellValue('AO' . $index, $user->mailformat);
+			$sheet->setCellValue('AP' . $index, $user->maildigest);
+			$sheet->setCellValue('AQ' . $index, $user->maildisplay);
+			$sheet->setCellValue('AR' . $index, $user->autosubscribe);
+			$sheet->setCellValue('AS' . $index, $user->trackforums);
+			$sheet->setCellValue('AT' . $index, $user->timecreated);
+			$sheet->setCellValue('AU' . $index, $user->timemodified);
+			$sheet->setCellValue('AV' . $index, $user->trustbitmask);
+			$sheet->setCellValue('AW' . $index, $user->imagealt);
+			$sheet->setCellValue('AX' . $index, $user->lastnamephonetic);
+			$sheet->setCellValue('AY' . $index, $user->firstnamephonetic);
+			$sheet->setCellValue('AZ' . $index, $user->middlename);
+			$sheet->setCellValue('BA' . $index, $user->alternatename);
+
+			$index++;
+		}
+
+		$writer = new Csv($spreadsheet);
+
+		header('Content-Description: File Transfer');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename=user.csv');
+		header('Cache-Control: max-age=0');
+
+		$writer->save('php://output');
 	}
 }

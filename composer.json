@@ -1,7 +1,7 @@
 {
 	"name": "manuelgil/alternate-admin",
 	"description": "This wrapper for Moodle adds a new interface to streamline your administrative tasks.",
-	"version": "0.3.1",
+	"version": "1.0.0",
 	"type": "project",
 	"keywords": [
 		"php",
@@ -32,29 +32,12 @@
 		"email": "atencion.ms@outlook.com",
 		"issues": "https://github.com/ManuelGil/alternate-admin/issues"
 	},
-	"funding": [
-		{
-			"type": "patreon",
-			"url": "https://www.patreon.com/imgil"
-		},
-		{
-			"type": "ko-fi",
-			"url": "https://ko-fi.com/imgil"
-		},
-		{
-			"type": "cafecito",
-			"url": "https://cafecito.app/imgil"
-		},
-		{
-			"type": "paypal",
-			"url": "https://paypal.me/ManuelFGil"
-		}
-	],
 	"require": {
 		"monolog/monolog": "^2.2",
 		"mustache/mustache": "^2.13",
+		"phpoffice/phpspreadsheet": "^1.16",
 		"phroute/phroute": "^2.1",
-		"vlucas/phpdotenv": "^5.2"
+		"vlucas/phpdotenv": "^5.3"
 	},
 	"autoload": {
 		"psr-4": {
