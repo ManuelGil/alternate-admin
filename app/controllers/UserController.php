@@ -140,9 +140,13 @@ class UserController extends BaseController
 				// Set an username.
 				$username = "{$prefix}{$separator}{$index}";
 
-				// Set a password.
-				$data = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
-				$password = substr(str_shuffle($data), 0, 7);
+				if (isset($_POST['unique']) && !empty($_POST['password'])) {
+					$password = $_POST['password'];
+				} else {
+					// Set a password.
+					$data = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
+					$password = substr(str_shuffle($data), 0, 7);
+				}
 
 				// Create a new user.
 				$user = create_user_record($username, $password);
