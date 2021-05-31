@@ -1,8 +1,13 @@
 # Alternative Admin for Moodle
 
+[![stability-deprecated](https://img.shields.io/badge/stability-deprecated-red.svg)]()
 [![GitHub Release](https://img.shields.io/github/v/release/ManuelGil/alternate-admin)]()
 [![GitHub Release Date](https://img.shields.io/github/release-date/ManuelGil/alternate-admin)]()
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)]()
+
+⚠ Deprecated! See [manuelgil/moodle-alternate-admin](https://packagist.org/packages/manuelgil/moodle-alternate-admin)
+
+\*_Due to the large number of code changes that can create a break point between this version and the latest version, I proceeded to deprecate this project quickly in order to release a completely revamped version._
 
 ![preview](https://raw.githubusercontent.com/ManuelGil/alternate-admin/main/docs/images/preview.png)
 
